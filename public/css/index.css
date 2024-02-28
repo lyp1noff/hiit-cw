@@ -18,6 +18,13 @@ main {
 }
 
 .container button {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 18px;
@@ -36,6 +43,10 @@ main {
     top: 0;
     left: 0;
     background-color: #333;
+}
+
+#menu a {
+    text-decoration: none;
 }
 
 #menu h1 {
