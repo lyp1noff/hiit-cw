@@ -1,10 +1,10 @@
 import Timer from './Timer.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const exerciseLabel = document.getElementById('exerciseLabel');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const timerDisplay = document.getElementById('timerDisplay');
+    const exerciseLabel = document.querySelector('#exerciseLabel');
+    const startBtn = document.querySelector('#startBtn');
+    const stopBtn = document.querySelector('#stopBtn');
+    const timerDisplay = document.querySelector('#timerDisplay');
 
     const exerciseName = "exercise #";
     const time = 60;

@@ -25,7 +25,7 @@ class Timer {
                 this.stop();
             }
             this.updateDisplay(elapsedSeconds);
-        }, 1000);
+        }, 100); // Check other options
         this.saveState();
     }
 

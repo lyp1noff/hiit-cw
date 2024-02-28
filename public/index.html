@@ -4,21 +4,37 @@
     <meta charset="UTF-8">
     <title>HIIT</title>
     <link rel="stylesheet" href="css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <header>
 
     </header>
 
-    <div class="container">
-        <h1 id="exerciseLabel"></h1>
-        <div id="timerDisplay">00:00</div>
-        <button id="startBtn">Start Workout</button>
-        <button id="stopBtn">Stop Workout</button>
-    </div>
+    <nav id="menu">
+        <h1>HIIT App</h1>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Workouts</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="container">
+            <h1 id="exerciseLabel"></h1>
+            <div id="timerDisplay">00:00</div>
+            <button id="startBtn">Start Workout</button>
+            <button id="stopBtn">Stop Workout</button>
+        </div>
+    </main>
 
     <footer>
-
+        <div id="mobileMenu">
+            <a href="#" class="active">Home</a>
+            <a href="#">Workouts</a>
+            <a href="#">Settings</a>
+        </div>
     </footer>
 
     <script type="module" src="./js/index.js"></script>
