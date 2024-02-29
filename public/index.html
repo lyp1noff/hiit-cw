@@ -3,9 +3,10 @@
 <head>
     <title>HIIT</title>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="css/index.css">
-    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/workout.css">
 </head>
 <body>
     <header>
@@ -13,35 +14,40 @@
     </header>
 
     <nav id="menu">
-        <a href="#">
-            <h1>
-                HIIT App
-            </h1>
-        </a>
+        <a href="/public"><h1>HIIT App</h1></a>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Workouts</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="/home" class="nav__link">Home</a></li>
+            <li><a href="/workouts" class="nav__link">Workouts</a></li>
+            <li><a href="/settings" class="nav__link">Settings</a></li>
         </ul>
     </nav>
 
     <main>
-        <div class="container">
-            <h1 id="exerciseLabel"></h1>
-            <div id="timerDisplay">00:00</div>
-            <button id="startBtn">Start Workout</button>
-            <button id="stopBtn">Stop Workout</button>
-        </div>
+        <section class="fade-in" data-route="home">
+            <h2>Home Page</h2>
+        </section>
+        <section class="fade-in" data-route="workouts">
+            <div class="container">
+                <h1 id="exerciseLabel"></h1>
+                <div id="timerDisplay">00:00</div>
+                <button id="startBtn">Start Workout</button>
+                <button id="stopBtn">Stop Workout</button>
+            </div>
+        </section>
+        <section class="fade-in" data-route="settings">
+            <h2>Settings Page</h2>
+        </section>
     </main>
 
     <footer>
         <div id="mobileMenu">
-            <a href="#" class="active">Home</a>
-            <a href="#">Workouts</a>
-            <a href="#">Settings</a>
+            <a href="/home" class="nav__link">Home</a>
+            <a href="/workouts" class="nav__link">Workouts</a>
+            <a href="/settings" class="nav__link">Settings</a>
         </div>
     </footer>
 
-    <script src="./js/index.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/workout.js"></script>
 </body>
 </html>

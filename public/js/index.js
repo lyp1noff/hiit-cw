@@ -1,101 +1,30 @@
-document.addEventListener('DOMContentLoaded', contentLoaded);
-
-function contentLoaded() {
-    const exerciseName = "exercise #";
-    const time = 60;
-
-    const exerciseLabel = document.querySelector('#exerciseLabel');
-    exerciseLabel.innerText = exerciseName;
-
-    let startTime = 0;
-    let pausedTime = 0;
-    let timerInterval = null;
-    loadState();
-
-
-    const startBtn = document.querySelector('#startBtn');
-    if (startTime) {
-        start();
-    } else if (pausedTime) {
-        startBtn.textContent = 'Resume';
-    }
-
-    startBtn.addEventListener('click', () => {
-        if (!startTime) {
-            start();
-        } else if (startTime) {
-            pause();
-        }
+function showContent(route) {
+    document.querySelectorAll('main > section').forEach(section => {
+        section.classList.remove('active');
     });
 
-    const stopBtn = document.querySelector('#stopBtn');
-    stopBtn.addEventListener('click', () => {
-        stop();
-    });
-
-    function start() {
-        startBtn.textContent = 'Pause';
-
-        if (!startTime) {
-            startTime = Date.now() - pausedTime;
-        }
-
-        tick();
-        timerInterval = setInterval(() => {
-            tick();
-        }, 100);
-
-        saveState();
-    }
-
-    function tick() {
-        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        const elapsedSeconds = time - elapsedTime;
-        if (elapsedSeconds <= 0) {
-            stop();
-        }
-        updateDisplay(elapsedSeconds);
-    }
-
-    function pause() {
-        startBtn.textContent = 'Resume';
-        clearInterval(timerInterval);
-        pausedTime = Date.now() - startTime;
-        startTime = 0;
-        saveState();
-    }
-
-    function stop() {
-        startBtn.textContent = 'Start Workout';
-        clearInterval(timerInterval);
-        pausedTime = 0;
-        startTime = 0;
-        localStorage.removeItem('timerState');
-        updateDisplay(0);
-    }
-
-    function updateDisplay(time) {
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-        const timerDisplay = document.querySelector('#timerDisplay');
-        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    function saveState() {
-        localStorage.setItem('timerState', JSON.stringify({
-            startTime: startTime,
-            pausedTime: pausedTime
-        }));
-    }
-
-    function loadState() {
-        const savedState = JSON.parse(localStorage.getItem('timerState'));
-        if (savedState) {
-            startTime = savedState.startTime;
-            pausedTime = savedState.pausedTime;
-            if (!startTime) {
-                updateDisplay(time - Math.floor(savedState.pausedTime / 1000));
-            }
-        }
+    const contentSection = document.querySelector(`main > section[data-route="${route}"]`);
+    if (contentSection) {
+        contentSection.classList.add('active');
     }
 }
+
+function navigateTo(route) {
+    history.pushState(null, null, route);
+    showContent(route);
+}
+
+function handleUrlChange() {
+    document.body.addEventListener("click", e => {
+        if (e.target.matches(".nav__link")) {
+            e.preventDefault();
+            navigateTo(e.target.getAttribute('href').substring(1));
+        }
+    });
+
+    const route = window.location.pathname.substring(1);
+    showContent(route || 'home');
+}
+
+document.addEventListener('DOMContentLoaded', handleUrlChange);
+window.addEventListener('popstate', handleUrlChange);
