@@ -1,39 +1,101 @@
-import Timer from './Timer.js';
+document.addEventListener('DOMContentLoaded', contentLoaded);
 
-document.addEventListener('DOMContentLoaded', () => {
-    const exerciseLabel = document.querySelector('#exerciseLabel');
-    const startBtn = document.querySelector('#startBtn');
-    const stopBtn = document.querySelector('#stopBtn');
-    const timerDisplay = document.querySelector('#timerDisplay');
-
+function contentLoaded() {
     const exerciseName = "exercise #";
     const time = 60;
 
+    const exerciseLabel = document.querySelector('#exerciseLabel');
     exerciseLabel.innerText = exerciseName;
 
-    const timer = new Timer(time, timerDisplay);
-    const timerState = JSON.parse(localStorage.getItem('timerState'));
-    if (timerState) {
-        if (timerState.startTime) {
-            timer.start();
-            startBtn.textContent = 'Pause';
-        } else {
-            startBtn.textContent = 'Resume';
-        }
+    let startTime = 0;
+    let pausedTime = 0;
+    let timerInterval = null;
+    loadState();
+
+
+    const startBtn = document.querySelector('#startBtn');
+    if (startTime) {
+        start();
+    } else if (pausedTime) {
+        startBtn.textContent = 'Resume';
     }
 
     startBtn.addEventListener('click', () => {
-        if (startBtn.textContent === 'Start Workout' || startBtn.textContent === 'Resume') {
-            timer.start();
-            startBtn.textContent = 'Pause';
-        } else if (startBtn.textContent === 'Pause') {
-            timer.pause();
-            startBtn.textContent = 'Resume';
+        if (!startTime) {
+            start();
+        } else if (startTime) {
+            pause();
         }
     });
 
+    const stopBtn = document.querySelector('#stopBtn');
     stopBtn.addEventListener('click', () => {
-        timer.stop();
-        startBtn.textContent = 'Start Workout';
+        stop();
     });
-});
+
+    function start() {
+        startBtn.textContent = 'Pause';
+
+        if (!startTime) {
+            startTime = Date.now() - pausedTime;
+        }
+
+        tick();
+        timerInterval = setInterval(() => {
+            tick();
+        }, 100);
+
+        saveState();
+    }
+
+    function tick() {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        const elapsedSeconds = time - elapsedTime;
+        if (elapsedSeconds <= 0) {
+            stop();
+        }
+        updateDisplay(elapsedSeconds);
+    }
+
+    function pause() {
+        startBtn.textContent = 'Resume';
+        clearInterval(timerInterval);
+        pausedTime = Date.now() - startTime;
+        startTime = 0;
+        saveState();
+    }
+
+    function stop() {
+        startBtn.textContent = 'Start Workout';
+        clearInterval(timerInterval);
+        pausedTime = 0;
+        startTime = 0;
+        localStorage.removeItem('timerState');
+        updateDisplay(0);
+    }
+
+    function updateDisplay(time) {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        const timerDisplay = document.querySelector('#timerDisplay');
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function saveState() {
+        localStorage.setItem('timerState', JSON.stringify({
+            startTime: startTime,
+            pausedTime: pausedTime
+        }));
+    }
+
+    function loadState() {
+        const savedState = JSON.parse(localStorage.getItem('timerState'));
+        if (savedState) {
+            startTime = savedState.startTime;
+            pausedTime = savedState.pausedTime;
+            if (!startTime) {
+                updateDisplay(time - Math.floor(savedState.pausedTime / 1000));
+            }
+        }
+    }
+}
