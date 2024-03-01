@@ -134,3 +134,6 @@ dist
 
 # JetBrains
 .idea
+
+# config
+config.js

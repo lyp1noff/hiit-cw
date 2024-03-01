@@ -2,8 +2,75 @@ const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
+const config = require('./config');
+
 const app = express();
 app.use(express.json());
+
+const serverIP = 'localhost';
+const serverPort = 8080;
+const googleRedirectUrl = `http://${serverIP}:${serverPort}/auth/google/callback`;
+const googleClientId = config.googleClientId;
+const googleClientSecret = config.googleClientSecret;
+
+app.get('/auth/google', (req, res) => {
+    const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=email profile&response_type=code`;
+    res.redirect(redirectUrl);
+});
+
+app.get('/auth/google/callback', async (req, res) => {
+    try {
+        const {code} = req.query;
+
+        const tokenUrl = 'https://oauth2.googleapis.com/token';
+        const tokenParams = new URLSearchParams({
+            code: code,
+            client_id: googleClientId,
+            client_secret: googleClientSecret,
+            redirect_uri: googleRedirectUrl,
+            grant_type: 'authorization_code'
+        });
+
+        const tokenResponse = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: tokenParams
+        });
+
+        if (!tokenResponse.ok) {
+            throw new Error('Failed to exchange authorization code for access token');
+        }
+
+        const tokenData = await tokenResponse.json();
+        const accessToken = tokenData.access_token;
+
+        const userInfoUrl = 'https://www.googleapis.com/oauth2/v3/userinfo';
+        const userInfoResponse = await fetch(userInfoUrl, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        if (!userInfoResponse.ok) {
+            throw new Error('Failed to fetch user information from Google');
+        }
+
+        const userData = await userInfoResponse.json();
+
+        // Handle user data
+        console.log(userData);
+        // const userID = userData.sub;
+
+        res.send(`Authentication successful. You will be redirected shortly.
+            <script>setTimeout(function() { window.location.href = "/settings"; }, 2000);</script>`
+        );
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('An error occurred during authentication');
+    }
+});
 
 let db = new sqlite3.Database('./hiit.db', (err) => {
     if (err) {
@@ -53,4 +120,4 @@ app.use((req, res) => {
     res.status(404).send('Not Found');
 });
 
-app.listen(8080, 'localhost', () => console.log('App is listening on http://localhost:8080.'));
+app.listen(serverPort, serverIP, () => console.log(`App is listening on http://${serverIP}:${serverPort}`));
