@@ -1,8 +1,12 @@
-const express = require('express');
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import sqlite3 from 'sqlite3';
 
-const config = require('./config');
+import config from './config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
@@ -107,12 +111,12 @@ app.post('/api/users', (req, res) => {
     });
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(join(__dirname, 'public')));
 const validRoutes = ['/', '/home', '/workouts', '/settings'];
 app.get(validRoutes, (req, res) => {
     const requestedRoute = req.url;
     if (validRoutes.includes(requestedRoute)) {
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        res.sendFile(join(__dirname, 'public', 'index.html'));
     }
 });
 

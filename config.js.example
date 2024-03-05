@@ -1,4 +1,6 @@
-module.exports = {
-    "googleClientId": "",
-    "googleClientSecret": ""
-}
+const config = {
+    googleClientId: "",
+    googleClientSecret: ""
+};
+
+export default config;
