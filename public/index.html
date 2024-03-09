@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/workout.css">
+    <link rel="stylesheet" href="css/workouts.css">
 </head>
 <body>
     <header>
@@ -26,7 +27,52 @@
         <section class="fade-in" data-route="home">
             <h2>Home Page</h2>
         </section>
+        <section class="fade-in" data-route="addWorkoutMenu">
+            <div class="container">
+                <ul class="sortable-list">
+                    <li class="item" draggable="true">
+                        <div class="details">
+                          <span>Item 1</span>
+                        </div>
+                        <i class="uil uil-draggabledots"></i>
+                    </li>
+                    <li class="item" draggable="true">
+                        <div class="details">
+                          <span>Item 2</span>
+                        </div>
+                        <i class="uil uil-draggabledots"></i>
+                    </li>
+                    <li class="item" draggable="true">
+                        <div class="details">
+                          <span>Item 3</span>
+                        </div>
+                        <i class="uil uil-draggabledots"></i>
+                    </li>
+                    <li class="item" draggable="true">
+                        <div class="details">
+                          <span>Item 4</span>
+                        </div>
+                        <i class="uil uil-draggabledots"></i>
+                    </li>
+                    <li class="item" draggable="true">
+                        <div class="details">
+                          <span>Item 5</span>
+                        </div>
+                        <i class="uil uil-draggabledots"></i>
+                    </li>
+                </ul>
+            </div>
+        </section>
         <section class="fade-in" data-route="workouts">
+            <div class="container">
+                <h1>Workouts</h1>
+                <div id="workoutsList">
+                    <p>Nothing here yet...</p>
+                </div>
+                <button id="addWorkout">Add Workout</button>
+            </div>
+        </section>
+        <section class="fade-in" data-route="workout">
             <div class="container">
                 <h1 id="exerciseLabel"></h1>
                 <div id="timerDisplay">00:00</div>
@@ -52,6 +98,7 @@
 
     <script src="js/index.js"></script>
     <script src="js/workout.js"></script>
+    <script type="module" src="js/workouts.js"></script>
     <script src="js/settings.js"></script>
 </body>
 </html>
