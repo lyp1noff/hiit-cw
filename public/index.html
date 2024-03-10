@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/workout.css">
     <link rel="stylesheet" href="css/workouts.css">
+    <link rel="stylesheet" href="css/workoutMenu.css">
 </head>
 <body>
     <header>
@@ -24,68 +25,39 @@
     </nav>
 
     <main>
-        <section class="fade-in" data-route="home">
+        <div id="home" class="fade-in" data-route="home">
             <h2>Home Page</h2>
-        </section>
-        <section class="fade-in" data-route="addWorkoutMenu">
-            <div class="container">
-                <ul class="sortable-list">
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 1</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 2</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 3</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 4</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 5</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                </ul>
+        </div>
+
+        <div id="workouts" class="fade-in" data-route="workouts">
+            <h1>Workouts</h1>
+            <div id="workoutsList">
+                <p>Nothing here yet...</p>
             </div>
-        </section>
-        <section class="fade-in" data-route="workouts">
-            <div class="container">
-                <h1>Workouts</h1>
-                <div id="workoutsList">
-                    <p>Nothing here yet...</p>
-                </div>
-                <button id="addWorkout">Add Workout</button>
-            </div>
-        </section>
-        <section class="fade-in" data-route="workout">
-            <div class="container">
-                <h1 id="exerciseLabel"></h1>
-                <div id="timerDisplay">00:00</div>
-                <button id="startBtn">Start Workout</button>
-                <button id="stopBtn">Stop Workout</button>
-            </div>
-        </section>
-        <section class="fade-in" data-route="settings">
+            <button id="addWorkout">Add Workout</button>
+        </div>
+
+        <div id="workoutMenu" class="fade-in" data-route="workoutMenu">
+            <h1>Workout Menu</h1>
+            <ul id="exercisesList"></ul>
+            <ul class="sortable-list"></ul>
+            <button id="exerciseSave">Save</button>
+            <button id="exerciseExit">Exit</button>
+        </div>
+
+        <div id="workout" class="fade-in" data-route="workout">
+            <h1 id="exerciseLabel"></h1>
+            <div id="timerDisplay">00:00</div>
+            <button id="startBtn">Start Workout</button>
+            <button id="stopBtn">Stop Workout</button>
+        </div>
+
+        <div id="settings" class="fade-in" data-route="settings">
             <h2>Settings Page</h2>
             <button id="getBtn">GET</button>
             <button id="addBtn">ADD</button>
             <a href="/auth/google">Google Login</a>
-        </section>
+        </div>
     </main>
 
     <footer>
@@ -96,8 +68,18 @@
         </div>
     </footer>
 
+    <template id="exerciseItemTemplate">
+        <li class="item" draggable="true">
+            <div class="details">
+                <span>{text}</span>
+            </div>
+            <i class="uil uil-draggabledots"></i>
+        </li>
+    </template>
+
     <script src="js/index.js"></script>
     <script src="js/workout.js"></script>
+    <script src="js/workoutMenu.js"></script>
     <script type="module" src="js/workouts.js"></script>
     <script src="js/settings.js"></script>
 </body>

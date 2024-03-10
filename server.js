@@ -80,10 +80,20 @@ let db = new sqlite3.Database('./hiit.db', (err) => {
     if (err) {
         return console.error(err.message);
     }
-    db.serialize(() => {
-        db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)");
-    });
+    // db.serialize(() => {
+    //     db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)");
+    // });
     console.log('Connected to the in-memory SQLite database.');
+});
+
+app.get('/api/exercises', (req, res) => {
+    db.all("SELECT * FROM exercises", (err, rows) => {
+        if (err) {
+            res.status(500).json({error: err.message});
+            return;
+        }
+        res.json(rows);
+    });
 });
 
 app.get('/api/users', (req, res) => {
