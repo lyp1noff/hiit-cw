@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+export function loadWorkoutPage() {
+    const contentSection = document.querySelector(`main > div[data-route="workout"]`);
+    contentSection.classList.add('active');
+
     const exerciseName = "exercise #";
     const timerDuration = 60;
 
@@ -92,4 +95,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-});
+}

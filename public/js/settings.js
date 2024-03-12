@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+export function loadSettingsPage() {
+    const contentSection = document.querySelector(`main > div[data-route="settings"]`);
+    contentSection.classList.add('active');
+
     const getBtn = document.querySelector('#getBtn')
     getBtn.addEventListener('click', async () => {
         let data = await fetchUsers();
@@ -9,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addBtn.addEventListener('click', async () => {
         await addUser('Andrew', 'lyp1noff@gmail.com');
     })
-});
+}
 
 async function fetchUsers() {
     const response = await fetch('/api/users');

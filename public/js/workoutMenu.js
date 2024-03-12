@@ -1,36 +1,41 @@
-let exercises = {}
-const sortableList = document.querySelector(".sortable-list");
+import * as router from './index.js'
 
-document.addEventListener('DOMContentLoaded', async () => {
+let exercises = {}
+
+export async function loadWorkoutMenuPage() {
+    const contentSection = document.querySelector(`main > div[data-route="workoutMenu"]`);
+    contentSection.classList.add('active');
+
     exercises = await fetchExercises();
 
+    updateExerciseDropdown()
+    updateExerciseDescription()
+
+    document.querySelector('#exerciseAddBtn').addEventListener('click', addExercise);
+    document.querySelector('#exerciseSave').addEventListener('click', saveWorkout);
+    document.querySelector('#exerciseExit').addEventListener('click', exitWorkout);
+
+    const sortableList = document.querySelector(".sortable-list");
+    sortableList.addEventListener("dragover", initSortableList);
+    sortableList.addEventListener("dragenter", e => e.preventDefault());
+}
+
+function updateExerciseDropdown() {
     const exerciseDropdown = document.querySelector('#exercise-dropdown');
+    exerciseDropdown.innerHTML = '';
     exercises.forEach(exercise => {
         const option = document.createElement('option');
         option.value = exercise.id;
         option.textContent = exercise.name;
         exerciseDropdown.appendChild(option);
     });
-    updateExerciseDescription()
-
     exerciseDropdown.addEventListener('change', updateExerciseDescription);
-
-    const exerciseAddBtn = document.querySelector('#exerciseAddBtn');
-    exerciseAddBtn.addEventListener('click', addExercise);
-    const exerciseSaveBtn = document.querySelector('#exerciseSave');
-    exerciseSaveBtn.addEventListener('click', saveWorkout);
-    const exerciseExitBtn = document.querySelector('#exerciseExit');
-    exerciseExitBtn.addEventListener('click', exitWorkout);
-
-    sortableList.addEventListener("dragover", initSortableList);
-    sortableList.addEventListener("dragenter", e => e.preventDefault());
-})
+}
 
 function updateExerciseDescription() {
     const exerciseDropdown = document.querySelector('#exercise-dropdown');
     const exerciseDescription = document.querySelector('#exercise-description');
-    const selectedExercise = parseInt(exerciseDropdown.value);
-    const selectedExerciseData = exercises.find(exercise => exercise.id === selectedExercise);
+    const selectedExerciseData = exercises.find(exercise => exercise.id === parseInt(exerciseDropdown.value));
     exerciseDescription.textContent = selectedExerciseData.description;
 }
 
@@ -56,6 +61,7 @@ function addExercise() {
     const editBtn = cloned.querySelector("#exercise-edit");
     editBtn.addEventListener('click', editExercise)
 
+    const sortableList = document.querySelector(".sortable-list");
     sortableList.append(cloned);
 
     const items = sortableList.querySelectorAll(".item");
@@ -102,12 +108,12 @@ async function saveWorkout() {
         body: JSON.stringify({name, data})
     });
 
-    exitWorkout();
+    await exitWorkout();
 }
 
-function exitWorkout() {
+async function exitWorkout() {
     resetMenu();
-    navigateTo('workouts');
+    await router.navigateTo('workouts');
 }
 
 function resetMenu() {
@@ -126,11 +132,11 @@ async function fetchExercises() {
 
 const initSortableList = (e) => {
     e.preventDefault();
+    const sortableList = document.querySelector(".sortable-list");
     const draggingItem = document.querySelector(".dragging");
     let siblings = [...sortableList.querySelectorAll(".item:not(.dragging)")];
     let nextSibling = siblings.find(sibling => {
         return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
     });
-
     sortableList.insertBefore(draggingItem, nextSibling);
 }

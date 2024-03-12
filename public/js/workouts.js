@@ -1,7 +1,13 @@
-document.addEventListener('DOMContentLoaded', async () => {
+import * as router from './index.js'
+
+export async function loadWorkoutsPage() {
+    const contentSection = document.querySelector(`main > div[data-route="workouts"]`);
+    contentSection.classList.add('active');
+
     const addWorkoutBtn = document.querySelector('#addWorkout');
-    addWorkoutBtn.addEventListener('click', () => showContent("workoutMenu"));
-})
+    addWorkoutBtn.addEventListener('click', () => router.showContent("workoutMenu"));
+    await updateUI();
+}
 
 document.addEventListener('contentChanged', async (e) => {
     const activeSection = e.detail.route === 'workouts';
@@ -13,7 +19,7 @@ document.addEventListener('contentChanged', async (e) => {
 async function handleClick(e) {
     const workout = await fetchWorkout(e.target.dataset.uuid)
     console.log(workout.data);
-    navigateTo('workout');
+    await router.navigateTo('workout');
 }
 
 async function updateUI() {
