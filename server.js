@@ -97,8 +97,15 @@ app.get('/api/exercises', (req, res) => {
 });
 
 app.post('/api/workouts', (req, res) => {
-    const data = req.body;
-    console.log(data);
+    const data = JSON.stringify(req.body);
+    const uuid = '1c29d0ni' // use uuid
+    db.run("INSERT INTO workouts (uuid, exercises) VALUES (?, ?)", [uuid, data], function (err) {
+        if (err) {
+            res.status(500).json({error: err.message});
+            return;
+        }
+        res.status(200);
+    });
 });
 
 app.get('/api/users', (req, res) => {
