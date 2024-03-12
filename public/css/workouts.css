@@ -1,12 +1,44 @@
 #workouts {
-    text-align: center;
     margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 #workouts h1 {
     font-size: 36px;
 }
 
-#workouts button {
-    margin-top: 20px;
+.workouts-container {
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    min-height: 44px;
+}
+
+.workouts-container p{
+    display: flex;
+    margin: 10px;
+    font-size: 18px;
+}
+
+.workouts-container .item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 140px;
+    list-style: none;
+    background: #fff;
+    border-radius: 5px;
+    padding: 6px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    user-select: none;
+    font-size: 18px;
 }

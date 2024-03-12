@@ -24,27 +24,22 @@
     padding: 6px;
     margin: 10px;
     border: 1px solid #ccc;
-    /*justify-content: space-between;*/
 }
 
-.item {
-
-}
-
-.item button {
+.sortable-list .item button {
     font-size: 12px;
     margin: 0 0 0 10px;
     padding: 6px;
 }
 
-.item .details {
+.sortable-list .item .details {
     margin-left: 8px;
     display: flex;
     align-items: center;
     flex-grow: 1;
 }
 
-.item .details img {
+.sortable-list .item .details img {
     height: 43px;
     width: 43px;
     pointer-events: none;
@@ -53,30 +48,41 @@
     border-radius: 50%;
 }
 
-.item .details span {
+.sortable-list .item .details span {
     font-size: 1.13rem;
 }
 
-.item i {
+.sortable-list .item i {
     color: #474747;
     font-size: 1.13rem;
 }
 
-.item.dragging {
+.sortable-list .item.dragging {
     opacity: 0.6;
 }
 
-.item.dragging :where(.details, i) {
+.sortable-list .item.dragging :where(.details, i) {
     opacity: 0;
 }
 
-.exercise-input {
+.workout-input {
+    display: flex;
+    flex-direction: column;
     margin: 20px auto;
     max-width: 900px;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     background-color: #f9f9f9;
+}
+
+#workout-name {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .exercise-input-wrapper {
@@ -86,26 +92,26 @@
     margin-bottom: 10px;
 }
 
-.exercise-input-wrapper select{
+.exercise-input-wrapper #exercise-dropdown {
     flex-grow: 1;
     margin: 0 auto;
 }
 
-.exercise-input-wrapper input[type="number"]{
+.exercise-input-wrapper #exercise-time {
     width: 90px;
 }
 
-.exercise-input-wrapper select,
-.exercise-input-wrapper input[type="number"],
-.exercise-input-wrapper button {
+.exercise-input-wrapper #exercise-dropdown,
+.exercise-input-wrapper #exercise-time,
+.exercise-input-wrapper #exerciseAddBtn {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     font-size: 18px;
 }
 
-.exercise-input-wrapper select,
-.exercise-input-wrapper input[type="number"] {
+.exercise-input-wrapper #exercise-dropdown,
+.exercise-input-wrapper #exercise-time {
     margin-right: 10px;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -123,9 +129,9 @@
         align-items: stretch
     }
 
-    .exercise-input-wrapper select,
-    .exercise-input-wrapper input[type="number"],
-    .exercise-input-wrapper button {
+    .exercise-input-wrapper #exercise-dropdown,
+    .exercise-input-wrapper #exercise-time,
+    .exercise-input-wrapper #exerciseAddBtn {
         margin: 5px 0;
         width: auto;
     }

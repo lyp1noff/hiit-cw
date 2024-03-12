@@ -31,15 +31,14 @@
 
         <div id="workouts" class="fade-in" data-route="workouts">
             <h1>Workouts</h1>
-            <div id="workoutsList">
-                <p>Nothing here yet...</p>
-            </div>
+            <div class="workouts-container"></div>
             <button id="addWorkout">Add Workout</button>
         </div>
 
         <div id="workoutMenu" class="fade-in" data-route="workoutMenu">
             <h1>Workout Menu</h1>
-            <div class="exercise-input">
+            <div class="workout-input">
+                <input id="workout-name" placeholder="Name your Workout">
                 <div class="exercise-input-wrapper">
                     <select id="exercise-dropdown"></select>
                     <input type="number" id="exercise-time" placeholder="Minutes">
@@ -89,7 +88,7 @@
     <script src="js/index.js"></script>
     <script src="js/workout.js"></script>
     <script src="js/workoutMenu.js"></script>
-    <script type="module" src="js/workouts.js"></script>
+    <script src="js/workouts.js"></script>
     <script src="js/settings.js"></script>
 </body>
 </html>

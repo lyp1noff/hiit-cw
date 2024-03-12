@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const exerciseDropdown = document.querySelector('#exercise-dropdown');
     exercises.forEach(exercise => {
         const option = document.createElement('option');
-        option.value = exercise.name;
+        option.value = exercise.id;
         option.textContent = exercise.name;
         exerciseDropdown.appendChild(option);
     });
@@ -29,13 +29,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 function updateExerciseDescription() {
     const exerciseDropdown = document.querySelector('#exercise-dropdown');
     const exerciseDescription = document.querySelector('#exercise-description');
-    const selectedExercise = exerciseDropdown.value;
-    const selectedExerciseData = exercises.find(exercise => exercise.name === selectedExercise);
+    const selectedExercise = parseInt(exerciseDropdown.value);
+    const selectedExerciseData = exercises.find(exercise => exercise.id === selectedExercise);
     exerciseDescription.textContent = selectedExerciseData.description;
 }
 
 function addExercise() {
     const exerciseDropdown = document.querySelector('#exercise-dropdown');
+    const selectedOption = exerciseDropdown.options[exerciseDropdown.selectedIndex];
     const exerciseTime = document.querySelector('#exercise-time');
 
     if (!exerciseTime.value || !exerciseDropdown.value) {
@@ -46,8 +47,8 @@ function addExercise() {
     const template = document.querySelector('#exerciseItemTemplate');
     const cloned = template.content.cloneNode(true);
     const span = cloned.querySelector("span");
-    span.innerText = `${exerciseDropdown.value} (${exerciseTime.value} min)`;
-    span.dataset.name = exerciseDropdown.value;
+    span.innerText = `${selectedOption.textContent} (${exerciseTime.value} min)`;
+    span.dataset.id = exerciseDropdown.value;
     span.dataset.time = exerciseTime.value;
 
     const removeBtn = cloned.querySelector("#exercise-remove");
@@ -75,26 +76,33 @@ function editExercise(e) {
 }
 
 async function saveWorkout() {
-    const exercises = [];
+    const workoutName = document.querySelector('#workout-name');
+    if (!workoutName.value) {
+        console.log("Empty values")
+        return;
+    }
+
     const listItems = document.querySelectorAll('.sortable-list .item span');
+    if (listItems.length < 1) return;
+    const exercises = [];
     listItems.forEach(listItem => {
         exercises.push({
-            name: listItem.dataset.name,
+            id: listItem.dataset.id,
             time: parseInt(listItem.dataset.time)
         });
     });
 
-    console.log(exercises);
-
-    const response = await fetch('/api/workouts', {
+    const name = workoutName.value;
+    const data = JSON.stringify(exercises)
+    await fetch('/api/workouts', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(exercises)
+        body: JSON.stringify({name, data})
     });
 
-    // console.log(response);
+    exitWorkout();
 }
 
 function exitWorkout() {
@@ -104,9 +112,7 @@ function exitWorkout() {
 
 function resetMenu() {
     const sortableList = document.querySelector('.sortable-list');
-    while (sortableList.firstChild) {
-        sortableList.removeChild(sortableList.firstChild);
-    }
+    sortableList.innerHTML = '';
     document.querySelector('#exercise-dropdown').selectedIndex = 0;
     document.querySelector('#exercise-time').value = '';
     document.querySelector('#exercise-description').textContent = '';

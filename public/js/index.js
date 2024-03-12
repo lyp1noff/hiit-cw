@@ -6,6 +6,8 @@ function showContent(route) {
     const contentSection = document.querySelector(`main > div[data-route="${route}"]`);
     if (contentSection) {
         contentSection.classList.add('active');
+        const event = new CustomEvent('contentChanged', {detail: {route: contentSection.dataset.route}});
+        document.dispatchEvent(event);
     }
 }
 

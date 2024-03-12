@@ -1,10 +1,8 @@
 import express from 'express';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { open } from 'sqlite';
-import sqlite3 from 'sqlite3';
-import { v4 as uuidv4 } from 'uuid';
+import {fileURLToPath} from 'url';
+import {dirname, join} from 'path';
 
+import * as db from './database.js'
 import config from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +24,7 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
     try {
-        const { code } = req.query;
+        const {code} = req.query;
 
         const tokenUrl = 'https://oauth2.googleapis.com/token';
         const tokenParams = new URLSearchParams({
@@ -78,51 +76,61 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
-async function init() {
-    const db = await open({
-        filename: './hiit.sqlite',
-        driver: sqlite3.Database,
-        verbose: true
-    });
-    await db.migrate({ migrationsPath: './migrations-sqlite' });
-    return db;
-}
-
-const dbConn = init();
-
 app.get('/api/exercises', async (req, res) => {
-    const db = await dbConn;
-    const data = await db.all("SELECT * FROM exercises")
-    res.json(data);
+    const data = await db.getExercises();
+    if (data) {
+        res.json(data);
+    } else {
+        res.status(404).json({error: "SQL error"});
+    }
+});
+
+app.get('/api/workout/:uuid', async (req, res) => {
+    const uuid = req.params.uuid;
+    const data = await db.getWorkout(uuid);
+    if (data) {
+        res.json(data);
+    } else {
+        res.status(404).json({error: "SQL error"});
+    }
+});
+
+app.get('/api/workouts', async (req, res) => {
+    const data = await db.getWorkouts();
+    if (data) {
+        res.json(data);
+    } else {
+        res.status(404).json({error: "SQL error"});
+    }
 });
 
 app.post('/api/workouts', async (req, res) => {
-    const data = JSON.stringify(req.body);
-    const uuid = uuidv4();
-    const db = await dbConn;
-    db.run("INSERT INTO workouts (uuid, data) VALUES (?, ?)", [uuid, data]);
-    res.status(200);
+    const {name, data} = req.body;
+    await db.addWorkout(name, data);
+    res.status(200).json({status: 200});
 });
 
 app.get('/api/users', async (req, res) => {
-    const db = await dbConn;
-    const data = await db.all("SELECT * FROM users");
-    res.json(data);
+    const data = await db.getUsers();
+    if (data) {
+        res.json(data);
+    } else {
+        res.status(404).json({error: "SQL error"});
+    }
 });
 
 app.post('/api/users', async (req, res) => {
     const { name, email } = req.body;
     if (!name || !email) {
-        res.status(400).json({ error: "Name and email are required" });
+        res.status(400).json({error: "Name and email are required"});
         return;
     }
-    const db = await dbConn;
-    db.run("INSERT INTO users (name, email) VALUES (?, ?)", [name, email]);
-    res.status(200);
+    await db.addUser(name, email)
+    res.status(200).json({status: 200});
 });
 
 app.use(express.static(join(__dirname, 'public')));
-const validRoutes = ['/', '/home', '/workouts', '/settings'];
+const validRoutes = ['/', '/home', '/workouts', '/workout', '/settings'];
 app.get(validRoutes, (req, res) => {
     const requestedRoute = req.url;
     if (validRoutes.includes(requestedRoute)) {
