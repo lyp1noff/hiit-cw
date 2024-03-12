@@ -96,6 +96,11 @@ app.get('/api/exercises', (req, res) => {
     });
 });
 
+app.post('/api/workouts', (req, res) => {
+    const data = req.body;
+    console.log(data);
+});
+
 app.get('/api/users', (req, res) => {
     db.all("SELECT * FROM users", (err, rows) => {
         if (err) {

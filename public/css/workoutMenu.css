@@ -21,15 +21,27 @@
     background: #fff;
     align-items: center;
     border-radius: 5px;
-    padding: 10px 13px;
+    padding: 6px;
     margin: 10px;
     border: 1px solid #ccc;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
+}
+
+.item {
+
+}
+
+.item button {
+    font-size: 12px;
+    margin: 0 0 0 10px;
+    padding: 6px;
 }
 
 .item .details {
+    margin-left: 8px;
     display: flex;
     align-items: center;
+    flex-grow: 1;
 }
 
 .item .details img {
