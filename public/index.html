@@ -39,7 +39,14 @@
 
         <div id="workoutMenu" class="fade-in" data-route="workoutMenu">
             <h1>Workout Menu</h1>
-            <ul id="exercisesList"></ul>
+            <div class="exercise-input">
+                <div class="exercise-input-wrapper">
+                    <select id="exercise-dropdown"></select>
+                    <input type="number" id="exercise-time" placeholder="Minutes">
+                    <button id="exerciseBtn">Add Exercise</button>
+                </div>
+                <p id="exercise-description"></p>
+            </div>
             <ul class="sortable-list"></ul>
             <button id="exerciseSave">Save</button>
             <button id="exerciseExit">Exit</button>

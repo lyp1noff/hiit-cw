@@ -1,21 +1,41 @@
+let exercises = {}
 const sortableList = document.querySelector(".sortable-list");
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const exercises = await fetchExercises();
-    const exercisesList = document.querySelector("#exercisesList");
+    exercises = await fetchExercises();
 
-    exercises.forEach(item => {
-        const li = document.createElement("li");
-        li.appendChild(document.createTextNode(item.name));
-        li.addEventListener("click", () => addExercise(item))
-        exercisesList.appendChild(li);
-    })
+    const exerciseDropdown = document.querySelector('#exercise-dropdown');
+    exercises.forEach(exercise => {
+        const option = document.createElement('option');
+        option.value = exercise.name;
+        option.textContent = exercise.name;
+        exerciseDropdown.appendChild(option);
+    });
+
+    updateExerciseDescription()
+    exerciseDropdown.addEventListener('change', updateExerciseDescription);
+
+    const exerciseBtn = document.querySelector('#exerciseBtn');
+    exerciseBtn.addEventListener('click', addExercise)
+
+    sortableList.addEventListener("dragover", initSortableList);
+    sortableList.addEventListener("dragenter", e => e.preventDefault());
 })
 
-function addExercise(item) {
-    let template = document.querySelector('#exerciseItemTemplate');
+function updateExerciseDescription() {
+    const exerciseDropdown = document.querySelector('#exercise-dropdown');
+    const exerciseDescription = document.querySelector('#exercise-description');
+    const selectedExercise = exerciseDropdown.value;
+    const selectedExerciseData = exercises.find(exercise => exercise.name === selectedExercise);
+    exerciseDescription.textContent = selectedExerciseData.description;
+}
+
+function addExercise() {
+    const template = document.querySelector('#exerciseItemTemplate');
     const cloned = template.content.cloneNode(true);
-    cloned.querySelector("span").innerText = item.name;
+
+    const exerciseDropdown = document.querySelector('#exercise-dropdown');
+    cloned.querySelector("span").innerText = exerciseDropdown.value;
     sortableList.append(cloned);
 
     const items = sortableList.querySelectorAll(".item");
@@ -42,6 +62,3 @@ const initSortableList = (e) => {
 
     sortableList.insertBefore(draggingItem, nextSibling);
 }
-
-sortableList.addEventListener("dragover", initSortableList);
-sortableList.addEventListener("dragenter", e => e.preventDefault());

@@ -25,6 +25,10 @@ button {
     cursor: pointer;
 }
 
+button:hover {
+    background-color: #218c5a;
+}
+
 #menu {
     position: fixed;
     height: 100%;
