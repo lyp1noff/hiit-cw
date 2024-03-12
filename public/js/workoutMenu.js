@@ -94,7 +94,7 @@ async function saveWorkout() {
         body: JSON.stringify(exercises)
     });
 
-    console.log(response);
+    // console.log(response);
 }
 
 function exitWorkout() {

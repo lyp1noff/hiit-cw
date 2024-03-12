@@ -1,7 +1,9 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { open } from 'sqlite';
 import sqlite3 from 'sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
 import config from './config.js';
 
@@ -24,7 +26,7 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
     try {
-        const {code} = req.query;
+        const { code } = req.query;
 
         const tokenUrl = 'https://oauth2.googleapis.com/token';
         const tokenParams = new URLSearchParams({
@@ -76,61 +78,47 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 });
 
-let db = new sqlite3.Database('./hiit.db', (err) => {
-    if (err) {
-        return console.error(err.message);
-    }
-    // db.serialize(() => {
-    //     db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, email TEXT)");
-    // });
-    console.log('Connected to the in-memory SQLite database.');
-});
-
-app.get('/api/exercises', (req, res) => {
-    db.all("SELECT * FROM exercises", (err, rows) => {
-        if (err) {
-            res.status(500).json({error: err.message});
-            return;
-        }
-        res.json(rows);
+async function init() {
+    const db = await open({
+        filename: './hiit.sqlite',
+        driver: sqlite3.Database,
+        verbose: true
     });
+    await db.migrate({ migrationsPath: './migrations-sqlite' });
+    return db;
+}
+
+const dbConn = init();
+
+app.get('/api/exercises', async (req, res) => {
+    const db = await dbConn;
+    const data = await db.all("SELECT * FROM exercises")
+    res.json(data);
 });
 
-app.post('/api/workouts', (req, res) => {
+app.post('/api/workouts', async (req, res) => {
     const data = JSON.stringify(req.body);
-    const uuid = '1c29d0ni' // use uuid
-    db.run("INSERT INTO workouts (uuid, exercises) VALUES (?, ?)", [uuid, data], function (err) {
-        if (err) {
-            res.status(500).json({error: err.message});
-            return;
-        }
-        res.status(200);
-    });
+    const uuid = uuidv4();
+    const db = await dbConn;
+    db.run("INSERT INTO workouts (uuid, data) VALUES (?, ?)", [uuid, data]);
+    res.status(200);
 });
 
-app.get('/api/users', (req, res) => {
-    db.all("SELECT * FROM users", (err, rows) => {
-        if (err) {
-            res.status(500).json({error: err.message});
-            return;
-        }
-        res.json(rows);
-    });
+app.get('/api/users', async (req, res) => {
+    const db = await dbConn;
+    const data = await db.all("SELECT * FROM users");
+    res.json(data);
 });
 
-app.post('/api/users', (req, res) => {
-    const {name, email} = req.body;
+app.post('/api/users', async (req, res) => {
+    const { name, email } = req.body;
     if (!name || !email) {
-        res.status(400).json({error: "Name and email are required"});
+        res.status(400).json({ error: "Name and email are required" });
         return;
     }
-    db.run("INSERT INTO users (name, email) VALUES (?, ?)", [name, email], function (err) {
-        if (err) {
-            res.status(500).json({error: err.message});
-            return;
-        }
-        res.json({id: this.lastID, name, email});
-    });
+    const db = await dbConn;
+    db.run("INSERT INTO users (name, email) VALUES (?, ?)", [name, email]);
+    res.status(200);
 });
 
 app.use(express.static(join(__dirname, 'public')));
