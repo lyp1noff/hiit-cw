@@ -1,6 +1,6 @@
 const config = {
-    googleClientId: "",
-    googleClientSecret: ""
+  googleClientId: '',
+  googleClientSecret: '',
 };
 
 export default config;
