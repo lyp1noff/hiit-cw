@@ -9,13 +9,6 @@ export async function loadWorkoutsPage() {
     await updateUI();
 }
 
-document.addEventListener('contentChanged', async (e) => {
-    const activeSection = e.detail.route === 'workouts';
-    if (activeSection) {
-        await updateUI();
-    }
-})
-
 async function handleClick(e) {
     const workout = await fetchWorkout(e.target.dataset.uuid)
     console.log(workout.data);
