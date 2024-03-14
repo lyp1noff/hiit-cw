@@ -4,6 +4,10 @@
     font-family: monospace;
 }
 
+.nav__link {
+    cursor: pointer;
+}
+
 a, button {
     -webkit-tap-highlight-color: transparent;
 }

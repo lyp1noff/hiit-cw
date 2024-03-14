@@ -2,18 +2,11 @@ import { loadWorkoutsPage } from './workouts.js';
 import { loadSettingsPage } from './settings.js';
 import { loadWorkoutPage } from './workout.js';
 import { loadWorkoutMenuPage } from './workoutMenu.js';
-import { loadHomePage } from './home.js';
 
 export async function showContent(path) {
-  document.querySelectorAll('main > div').forEach(section => {
-    section.classList.remove('active');
-  });
+  loadPage(path);
   switch (path) {
-    case '/':
-      loadHomePage();
-      break;
     case 'home':
-      loadHomePage();
       break;
     case 'workout':
       await loadWorkoutPage();
@@ -28,9 +21,19 @@ export async function showContent(path) {
       loadSettingsPage();
       break;
     default:
-      loadHomePage();
       console.log('Unknown route:', path);
   }
+}
+
+function loadPage(path) {
+  document.querySelectorAll('main > div').forEach(section => {
+    section.classList.remove('active');
+  });
+
+  // Handle load page js
+
+  const contentSection = document.querySelector(`main > div[data-route="${path}"]`);
+  contentSection.classList.add('active');
 }
 
 export async function navigateTo(route) {
@@ -39,11 +42,10 @@ export async function navigateTo(route) {
 }
 
 async function handleUrlChange() {
-  document.body.addEventListener('click', e => {
-    if (e.target.matches('.nav__link')) {
-      e.preventDefault();
-      navigateTo(e.target.getAttribute('href').substring(1));
-    }
+  document.querySelectorAll('.nav__link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      navigateTo(e.target.dataset.route);
+    });
   });
 
   const route = window.location.pathname.substring(1);

@@ -1,9 +1,6 @@
 import * as router from './index.js';
 
 export async function loadWorkoutsPage() {
-  const contentSection = document.querySelector('main > div[data-route="workouts"]');
-  contentSection.classList.add('active');
-
   const addWorkoutBtn = document.querySelector('#addWorkout');
   addWorkoutBtn.addEventListener('click', () => router.showContent('workoutMenu'));
   await updateUI();

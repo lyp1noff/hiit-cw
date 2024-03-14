@@ -3,9 +3,6 @@ import * as router from './index.js';
 let exercises = {};
 
 export async function loadWorkoutMenuPage() {
-  const contentSection = document.querySelector('main > div[data-route="workoutMenu"]');
-  contentSection.classList.add('active');
-
   exercises = await fetchExercises();
 
   updateExerciseDropdown();

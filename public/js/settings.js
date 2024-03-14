@@ -1,7 +1,4 @@
 export function loadSettingsPage() {
-  const contentSection = document.querySelector('main > div[data-route="settings"]');
-  contentSection.classList.add('active');
-
   const getBtn = document.querySelector('#getBtn');
   getBtn.addEventListener('click', async () => {
     const data = await fetchUsers();
