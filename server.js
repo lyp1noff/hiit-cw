@@ -68,11 +68,21 @@ app.get('/auth/google/callback', async (req, res) => {
     // const userID = userData.sub;
 
     res.send(`Authentication successful. You will be redirected shortly.
-            <script>setTimeout(function() { window.location.href = "/settings"; }, 2000);</script>`,
+            <script>setTimeout(function() { window.location.href = "/app/settings"; }, 2000);</script>`,
     );
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('An error occurred during authentication');
+  }
+});
+
+app.get('/api/exercise/:id', async (req, res) => {
+  const id = req.params.id;
+  const data = await db.getExercise(id);
+  if (data) {
+    res.json(data);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
   }
 });
 
@@ -130,12 +140,8 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.use(express.static(join(__dirname, 'public')));
-const validRoutes = ['/', '/home', '/workouts', '/workout', '/settings'];
-app.get(validRoutes, (req, res) => {
-  const requestedRoute = req.url;
-  if (validRoutes.includes(requestedRoute)) {
-    res.sendFile(join(__dirname, 'public', 'index.html'));
-  }
+app.get('/app/*', (req, res) => {
+  res.sendFile(join(__dirname, 'public', 'index.html'));
 });
 
 app.use((req, res) => {

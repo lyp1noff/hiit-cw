@@ -14,6 +14,11 @@ async function init() {
 
 const dbConn = init();
 
+export async function getExercise(id) {
+  const db = await dbConn;
+  return await db.get('SELECT * FROM exercises WHERE id = ?', [id]);
+}
+
 export async function getExercises() {
   const db = await dbConn;
   return await db.all('SELECT * FROM exercises');

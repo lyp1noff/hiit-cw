@@ -5,8 +5,8 @@ import { loadWorkoutPage } from './workout.js';
 import { loadWorkoutEditPage } from './workoutEdit.js';
 
 async function loadPages() {
-  loadWorkoutPage();
   loadSettingsPage();
+  await loadWorkoutPage();
   await loadWorkoutsPage();
   await loadWorkoutEditPage();
 
@@ -20,8 +20,8 @@ async function loadPages() {
 }
 
 function handleUrlChange() {
-  const route = window.location.pathname.substring(1);
-  router.showContent(route || 'home');
+  const route = window.location.pathname.substring(5);
+  router.routeTo(route || 'home');
 }
 
 document.addEventListener('DOMContentLoaded', loadPages);

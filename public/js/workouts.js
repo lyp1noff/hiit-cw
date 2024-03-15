@@ -2,7 +2,7 @@ import * as router from './router.js';
 
 export async function loadWorkoutsPage() {
   const addWorkoutBtn = document.querySelector('#addWorkout');
-  addWorkoutBtn.addEventListener('click', () => router.showContent('workoutEdit'));
+  addWorkoutBtn.addEventListener('click', () => router.showContent('workout-edit'));
   await refreshUI();
 }
 
@@ -13,9 +13,9 @@ document.addEventListener('contentChanged', async (e) => {
   }
 });
 
-async function openWorkout(e) {
-  const workout = await fetchWorkout(e.target.dataset.uuid);
-  console.log(workout.data);
+function openWorkout(e) {
+  const workout = e.target.dataset.uuid;
+  localStorage.setItem('workout', workout);
   router.routeTo('workout');
 }
 
@@ -40,11 +40,6 @@ async function refreshUI() {
       workoutsContainer.appendChild(ul);
     });
   }
-}
-
-async function fetchWorkout(uuid) {
-  const response = await fetch(`/api/workout/${uuid}`);
-  return await response.json();
 }
 
 async function fetchWorkouts() {

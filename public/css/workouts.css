@@ -12,6 +12,11 @@
     min-height: 44px;
 }
 
+.workouts-container p{
+    margin: 10px;
+    font-size: 18px;
+}
+
 .workouts-container .item{
     min-width: 140px;
     list-style: none;
