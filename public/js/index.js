@@ -1,56 +1,28 @@
+import * as router from './router.js';
 import { loadWorkoutsPage } from './workouts.js';
 import { loadSettingsPage } from './settings.js';
 import { loadWorkoutPage } from './workout.js';
-import { loadWorkoutMenuPage } from './workoutMenu.js';
+import { loadWorkoutEditPage } from './workoutEdit.js';
 
-export async function showContent(path) {
-  loadPage(path);
-  switch (path) {
-    case 'home':
-      break;
-    case 'workout':
-      await loadWorkoutPage();
-      break;
-    case 'workoutMenu':
-      await loadWorkoutMenuPage();
-      break;
-    case 'workouts':
-      await loadWorkoutsPage();
-      break;
-    case 'settings':
-      loadSettingsPage();
-      break;
-    default:
-      console.log('Unknown route:', path);
-  }
-}
+async function loadPages() {
+  loadWorkoutPage();
+  loadSettingsPage();
+  await loadWorkoutsPage();
+  await loadWorkoutEditPage();
 
-function loadPage(path) {
-  document.querySelectorAll('main > div').forEach(section => {
-    section.classList.remove('active');
-  });
-
-  // Handle load page js
-
-  const contentSection = document.querySelector(`main > div[data-route="${path}"]`);
-  contentSection.classList.add('active');
-}
-
-export async function navigateTo(route) {
-  history.pushState(null, null, route);
-  await showContent(route);
-}
-
-async function handleUrlChange() {
   document.querySelectorAll('.nav__link').forEach(link => {
     link.addEventListener('click', (e) => {
-      navigateTo(e.target.dataset.route);
+      router.routeTo(e.target.dataset.route);
     });
   });
 
-  const route = window.location.pathname.substring(1);
-  await showContent(route || 'home');
+  handleUrlChange();
 }
 
-document.addEventListener('DOMContentLoaded', handleUrlChange);
+function handleUrlChange() {
+  const route = window.location.pathname.substring(1);
+  router.showContent(route || 'home');
+}
+
+document.addEventListener('DOMContentLoaded', loadPages);
 window.addEventListener('popstate', handleUrlChange);

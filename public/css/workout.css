@@ -1,17 +1,8 @@
-#workout {
-    text-align: center;
-    margin-top: 50px;
-}
-
-#workout h1 {
-    font-size: 36px;
-}
-
-#workout button {
+.workout-container button {
     margin-top: 20px;
 }
 
-#workout #timerDisplay {
+.workout-container #timerDisplay {
     font-size: 48px;
     margin-top: 20px;
 }

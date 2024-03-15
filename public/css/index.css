@@ -12,8 +12,19 @@ a, button {
     -webkit-tap-highlight-color: transparent;
 }
 
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
 main {
     padding-left: 260px;
+}
+
+.screen {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
 }
 
 button {
@@ -33,7 +44,7 @@ button:hover {
     background-color: #218c5a;
 }
 
-#menu {
+nav {
     position: fixed;
     height: 100%;
     width: 260px;
@@ -42,33 +53,37 @@ button:hover {
     background-color: #333;
 }
 
-#menu a {
+nav a {
     text-decoration: none;
 }
 
-#menu h1 {
+nav h1 {
     padding-top: 20px;
     color: white;
     text-align: center;
     font-size: 24px;
 }
 
-#menu ul {
+nav ul {
     list-style-type: none;
     padding: 20px;
 }
 
-#menu ul li {
+nav ul li {
     margin-bottom: 10px;
 }
 
-#menu ul li a {
+nav ul li a {
     color: white;
     text-decoration: none;
     font-size: 18px;
 }
 
-#mobileMenu {
+.nav__link {
+    user-select: none;
+}
+
+.mobile {
     display: none;
     background-color: #333;
     overflow: hidden;
@@ -78,7 +93,7 @@ button:hover {
     justify-content: center;
 }
 
-#mobileMenu a {
+.mobile a {
     float: left;
     display: block;
     color: white;
@@ -93,11 +108,11 @@ button:hover {
         padding-left: 0;
     }
 
-    #menu {
+    nav {
         display: none;
     }
 
-    #mobileMenu {
+    .mobile {
         display: flex;
     }
 }

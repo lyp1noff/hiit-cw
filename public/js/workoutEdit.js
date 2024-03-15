@@ -1,8 +1,8 @@
-import * as router from './index.js';
+import * as router from './router.js';
 
 let exercises = {};
 
-export async function loadWorkoutMenuPage() {
+export async function loadWorkoutEditPage() {
   exercises = await fetchExercises();
 
   updateExerciseDropdown();
@@ -108,15 +108,16 @@ async function saveWorkout() {
   await exitWorkout();
 }
 
-async function exitWorkout() {
+function exitWorkout() {
   resetMenu();
-  await router.navigateTo('workouts');
+  router.routeTo('workouts');
 }
 
 function resetMenu() {
   const sortableList = document.querySelector('.sortable-list');
   sortableList.innerHTML = '';
   document.querySelector('#exercise-dropdown').selectedIndex = 0;
+  document.querySelector('#workout-name').value = '';
   document.querySelector('#exercise-time').value = '';
   document.querySelector('#exercise-description').textContent = '';
   updateExerciseDescription();

@@ -1,18 +1,25 @@
-import * as router from './index.js';
+import * as router from './router.js';
 
 export async function loadWorkoutsPage() {
   const addWorkoutBtn = document.querySelector('#addWorkout');
-  addWorkoutBtn.addEventListener('click', () => router.showContent('workoutMenu'));
-  await updateUI();
+  addWorkoutBtn.addEventListener('click', () => router.showContent('workoutEdit'));
+  await refreshUI();
 }
 
-async function handleClick(e) {
+document.addEventListener('contentChanged', async (e) => {
+  const activeSection = e.detail.route === 'workouts';
+  if (activeSection) {
+    await refreshUI();
+  }
+});
+
+async function openWorkout(e) {
   const workout = await fetchWorkout(e.target.dataset.uuid);
   console.log(workout.data);
-  await router.navigateTo('workout');
+  router.routeTo('workout');
 }
 
-async function updateUI() {
+async function refreshUI() {
   const workouts = await fetchWorkouts();
   const workoutsContainer = document.querySelector('.workouts-container');
   workoutsContainer.innerHTML = '';
@@ -28,7 +35,7 @@ async function updateUI() {
       li.textContent = workout.name;
       li.classList.add('item');
       li.dataset.uuid = workout.uuid;
-      li.addEventListener('click', handleClick);
+      li.addEventListener('click', openWorkout);
       ul.appendChild(li);
       workoutsContainer.appendChild(ul);
     });

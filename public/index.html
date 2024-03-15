@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/workout.css">
     <link rel="stylesheet" href="./css/workouts.css">
-    <link rel="stylesheet" href="./css/workoutMenu.css">
+    <link rel="stylesheet" href="css/workoutEdit.css">
 </head>
 <body>
     <header>
 
     </header>
 
-    <nav id="menu">
+    <nav>
         <a href="/"><h1>HIIT App</h1></a>
         <ul>
             <li><a data-route="home" class="nav__link">Home</a></li>
@@ -25,17 +25,19 @@
     </nav>
 
     <main>
-        <div id="home" class="fade-in" data-route="home">
-            <h2>Home Page</h2>
-        </div>
+        <section class="screen fade-in" data-route="home">
+            <h1>Home</h1>
+        </section>
 
-        <div id="workouts" class="fade-in" data-route="workouts">
-            <h1>Workouts</h1>
-            <div class="workouts-container"></div>
-            <button id="addWorkout">Add Workout</button>
-        </div>
+        <section class="screen fade-in" data-route="workouts">
+            <div class="workouts">
+                <h1>Workouts</h1>
+                <div class="workouts-container"></div>
+                <button id="addWorkout">Add Workout</button>
+            </div>
+        </section>
 
-        <div id="workoutMenu" class="fade-in" data-route="workoutMenu">
+        <section class="screen fade-in" data-route="workoutEdit">
             <h1>Workout Menu</h1>
             <div class="workout-input">
                 <input id="workout-name" placeholder="Name your Workout">
@@ -49,25 +51,27 @@
             <ul class="sortable-list"></ul>
             <button id="exerciseSave">Save</button>
             <button id="exerciseExit">Exit</button>
-        </div>
+        </section>
 
-        <div id="workout" class="fade-in" data-route="workout">
-            <h1 id="exerciseLabel"></h1>
-            <div id="timerDisplay">00:00</div>
-            <button id="startBtn">Start Workout</button>
-            <button id="stopBtn">Stop Workout</button>
-        </div>
+        <section class="screen fade-in" data-route="workout">
+            <div class="workout-container">
+                <h1 id="exerciseLabel"></h1>
+                <div id="timerDisplay">00:00</div>
+                <button id="startBtn">Start Workout</button>
+                <button id="stopBtn">Stop Workout</button>
+            </div>
+        </section>
 
-        <div id="settings" class="fade-in" data-route="settings">
-            <h2>Settings Page</h2>
+        <section class="screen fade-in" data-route="settings">
+            <h1>Settings</h1>
             <button id="getBtn">GET_USERS</button>
             <button id="addBtn">ADD_USER</button>
             <a href="/auth/google">Google Login</a>
-        </div>
+        </section>
     </main>
 
     <footer>
-        <div id="mobileMenu">
+        <div class="mobile">
             <a data-route="home" class="nav__link">Home</a>
             <a data-route="workouts" class="nav__link">Workouts</a>
             <a data-route="settings" class="nav__link">Settings</a>
