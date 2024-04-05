@@ -137,3 +137,6 @@ dist
 
 # config
 config.js
+
+# database
+hiit.sqlite

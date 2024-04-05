@@ -1,104 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>HIIT</title>
-    <meta charset="UTF-8">
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/workout.css">
-    <link rel="stylesheet" href="css/workouts.css">
-</head>
-<body>
-    <header>
 
-    </header>
+<title>HIIT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<script type="module" src="/js/index.js"></script>
+<link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/css/workout.css">
+<link rel="stylesheet" href="/css/workouts.css">
+<link rel="stylesheet" href="/css/workoutEdit.css">
 
-    <nav id="menu">
-        <a href="/"><h1>HIIT App</h1></a>
-        <ul>
-            <li><a href="/home" class="nav__link">Home</a></li>
-            <li><a href="/workouts" class="nav__link">Workouts</a></li>
-            <li><a href="/settings" class="nav__link">Settings</a></li>
-        </ul>
-    </nav>
+<nav>
+    <a href="/"><h1>HIIT App</h1></a>
+    <ul>
+        <li><a data-route="home" class="nav__link">Home</a></li>
+        <li><a data-route="workouts" class="nav__link">Workouts</a></li>
+        <li><a data-route="settings" class="nav__link">Settings</a></li>
+    </ul>
+</nav>
 
-    <main>
-        <section class="fade-in" data-route="home">
-            <h2>Home Page</h2>
-        </section>
-        <section class="fade-in" data-route="addWorkoutMenu">
-            <div class="container">
-                <ul class="sortable-list">
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 1</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 2</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 3</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 4</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                    <li class="item" draggable="true">
-                        <div class="details">
-                          <span>Item 5</span>
-                        </div>
-                        <i class="uil uil-draggabledots"></i>
-                    </li>
-                </ul>
-            </div>
-        </section>
-        <section class="fade-in" data-route="workouts">
-            <div class="container">
-                <h1>Workouts</h1>
-                <div id="workoutsList">
-                    <p>Nothing here yet...</p>
-                </div>
-                <button id="addWorkout">Add Workout</button>
-            </div>
-        </section>
-        <section class="fade-in" data-route="workout">
-            <div class="container">
-                <h1 id="exerciseLabel"></h1>
-                <div id="timerDisplay">00:00</div>
-                <button id="startBtn">Start Workout</button>
-                <button id="stopBtn">Stop Workout</button>
-            </div>
-        </section>
-        <section class="fade-in" data-route="settings">
-            <h2>Settings Page</h2>
-            <button id="getBtn">GET</button>
-            <button id="addBtn">ADD</button>
-            <a href="/auth/google">Google Login</a>
-        </section>
-    </main>
+<main>
+    <section class="screen fade-in" data-route="home">
+        <h1>Home</h1>
+    </section>
 
-    <footer>
-        <div id="mobileMenu">
-            <a href="/home" class="nav__link">Home</a>
-            <a href="/workouts" class="nav__link">Workouts</a>
-            <a href="/settings" class="nav__link">Settings</a>
+    <section class="screen fade-in" data-route="workouts">
+        <div class="workouts">
+            <h1>Workouts</h1>
+            <div class="workouts-container"></div>
+            <button id="addWorkout">Add Workout</button>
         </div>
-    </footer>
+    </section>
 
-    <script src="js/index.js"></script>
-    <script src="js/workout.js"></script>
-    <script type="module" src="js/workouts.js"></script>
-    <script src="js/settings.js"></script>
-</body>
+    <section class="screen fade-in" data-route="workout-edit">
+        <h1>Workout Menu</h1>
+        <div class="workout-input">
+            <input id="workout-name" placeholder="Name your Workout">
+            <div class="exercise-input-wrapper">
+                <select id="exercise-dropdown"></select>
+                <input type="number" id="exercise-time" placeholder="Minutes">
+                <button id="exerciseAddBtn">Add Exercise</button>
+            </div>
+            <p id="exercise-description"></p>
+        </div>
+        <ul class="sortable-list"></ul>
+        <button id="exerciseSave">Save</button>
+        <button id="exerciseExit">Exit</button>
+    </section>
+
+    <section class="screen fade-in" data-route="workout">
+        <div class="workout-container">
+            <h1 id="exerciseLabel"></h1>
+            <div id="timerDisplay">00:00</div>
+            <button id="startBtn">Start Workout</button>
+            <button id="stopBtn">Stop Workout</button>
+        </div>
+    </section>
+
+    <section class="screen fade-in" data-route="settings">
+        <h1>Settings</h1>
+        <button id="getBtn">GET_USERS</button>
+        <button id="addBtn">ADD_USER</button>
+        <a href="/auth/google">Google Login</a>
+    </section>
+</main>
+
+<footer>
+    <div class="mobile">
+        <a data-route="home" class="nav__link">Home</a>
+        <a data-route="workouts" class="nav__link">Workouts</a>
+        <a data-route="settings" class="nav__link">Settings</a>
+    </div>
+</footer>
+
+<template id="exerciseItemTemplate">
+    <li class="item" draggable="true">
+        <div class="details">
+            <span>{text}</span>
+        </div>
+        <button id="exercise-edit">Edit</button>
+        <button id="exercise-remove">Remove</button>
+        <!--<i class="uil uil-draggabledots"></i>-->
+    </li>
+</template>
 </html>

@@ -1,30 +1,28 @@
-function showContent(route) {
-    document.querySelectorAll('main > section').forEach(section => {
-        section.classList.remove('active');
+import * as router from './router.js';
+import { loadWorkoutsPage } from './workouts.js';
+import { loadSettingsPage } from './settings.js';
+import { loadWorkoutPage } from './workout.js';
+import { loadWorkoutEditPage } from './workoutEdit.js';
+
+async function loadPages() {
+  loadSettingsPage();
+  await loadWorkoutPage();
+  await loadWorkoutsPage();
+  await loadWorkoutEditPage();
+
+  document.querySelectorAll('.nav__link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      router.routeTo(e.target.dataset.route);
     });
+  });
 
-    const contentSection = document.querySelector(`main > section[data-route="${route}"]`);
-    if (contentSection) {
-        contentSection.classList.add('active');
-    }
-}
-
-function navigateTo(route) {
-    history.pushState(null, null, route);
-    showContent(route);
+  handleUrlChange();
 }
 
 function handleUrlChange() {
-    document.body.addEventListener("click", e => {
-        if (e.target.matches(".nav__link")) {
-            e.preventDefault();
-            navigateTo(e.target.getAttribute('href').substring(1));
-        }
-    });
-
-    const route = window.location.pathname.substring(1);
-    showContent(route || 'home');
+  const route = window.location.pathname.substring(5);
+  router.routeTo(route || 'home');
 }
 
-document.addEventListener('DOMContentLoaded', handleUrlChange);
+document.addEventListener('DOMContentLoaded', loadPages);
 window.addEventListener('popstate', handleUrlChange);

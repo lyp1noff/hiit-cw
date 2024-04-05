@@ -1,95 +1,153 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const exerciseName = "exercise #";
-    const timerDuration = 60;
+import { routeTo } from './router.js';
 
-    let startTime = 0;
-    let pausedTime = 0;
-    let timerInterval = null;
+const ui = {};
 
-    const exerciseLabel = document.querySelector('#exerciseLabel');
-    exerciseLabel.innerText = exerciseName;
+let timerDuration = 0;
+let startTime = 0;
+let pausedTime = 0;
+let timerInterval = null;
+let workout = null;
+let activeExerciseIndex = null;
 
-    const startBtn = document.querySelector('#startBtn');
-    startBtn.addEventListener('click', () => {
-        if (!startTime) {
-            start();
-        } else if (startTime) {
-            pause();
-        }
-    });
+export async function loadWorkoutPage() {
+  ui.exerciseLabel = document.querySelector('#exerciseLabel');
+  ui.startBtn = document.querySelector('#startBtn');
+  ui.stopBtn = document.querySelector('#stopBtn');
 
-    const stopBtn = document.querySelector('#stopBtn');
-    stopBtn.addEventListener('click', () => {
-        stop();
-    });
-
-    loadState();
-    if (startTime) {
-        start();
-    } else if (pausedTime) {
-        startBtn.textContent = 'Resume';
+  ui.startBtn.addEventListener('click', async () => {
+    if (!startTime) {
+      await start();
+    } else if (startTime) {
+      pause();
     }
+  });
+  ui.stopBtn.addEventListener('click', () => {
+    stop();
+  });
 
-    function start() {
-        startBtn.textContent = 'Pause';
+  await loadWorkout();
+  loadTimerState();
+  if (startTime) {
+    await start();
+  } else if (pausedTime) {
+    ui.startBtn.textContent = 'Resume';
+  }
+}
 
-        if (!startTime) {
-            startTime = Date.now() - pausedTime;
-        }
-
-        tick();
-        timerInterval = setInterval(tick, 100);
-        saveState();
-    }
-
-    function tick() {
-        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-        const remainingSeconds = timerDuration - elapsedTime;
-        if (remainingSeconds <= 0) {
-            stop();
-        }
-        updateDisplay(remainingSeconds);
-    }
-
-    function pause() {
-        startBtn.textContent = 'Resume';
-        clearInterval(timerInterval);
-        pausedTime = Date.now() - startTime;
-        startTime = 0;
-        saveState();
-    }
-
-    function stop() {
-        startBtn.textContent = 'Start Workout';
-        clearInterval(timerInterval);
-        pausedTime = 0;
-        startTime = 0;
-        localStorage.removeItem('timerState');
-        updateDisplay(0);
-    }
-
-    function updateDisplay(time) {
-        const minutes = Math.floor(time / 60);
-        const seconds = time % 60;
-        const timerDisplay = document.querySelector('#timerDisplay');
-        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    function saveState() {
-        localStorage.setItem('timerState', JSON.stringify({
-            startTime: startTime,
-            pausedTime: pausedTime
-        }));
-    }
-
-    function loadState() {
-        const savedState = JSON.parse(localStorage.getItem('timerState'));
-        if (savedState) {
-            startTime = savedState.startTime;
-            pausedTime = savedState.pausedTime;
-            if (!startTime) {
-                updateDisplay(timerDuration - Math.floor(pausedTime / 1000));
-            }
-        }
-    }
+document.addEventListener('contentChanged', async (e) => {
+  const activeSection = e.detail.route === 'workout';
+  if (activeSection) {
+    await loadWorkout();
+  }
 });
+
+async function loadWorkout() {
+  const activeWorkout = JSON.parse(localStorage.getItem('workout'));
+  if (activeWorkout) {
+    workout = await fetchWorkout(activeWorkout.workoutUUID);
+    activeExerciseIndex = activeWorkout.activeExerciseIndex;
+    const workoutData = JSON.parse(workout.data);
+    const activeExercise = workoutData[activeExerciseIndex];
+    const activeExerciseData = await fetchExercise(activeExercise.id);
+    timerDuration = parseInt(activeExercise.time) * 5;
+    ui.exerciseLabel.innerText = activeExerciseData.name;
+  }
+}
+
+async function start() {
+  ui.startBtn.textContent = 'Pause';
+
+  if (!startTime) {
+    startTime = Date.now() - pausedTime;
+  }
+
+  await tick();
+  timerInterval = setInterval(tick, 100);
+  saveState();
+}
+
+async function tick() {
+  const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+  const remainingSeconds = timerDuration - elapsedTime;
+  if (remainingSeconds <= 0) {
+    updateDisplay(0);
+    await timerExpired();
+  }
+  updateDisplay(remainingSeconds);
+}
+
+function pause() {
+  ui.startBtn.textContent = 'Resume';
+  clearInterval(timerInterval);
+  pausedTime = Date.now() - startTime;
+  startTime = 0;
+  saveState();
+}
+
+async function timerExpired() {
+  clearInterval(timerInterval);
+  pausedTime = 0;
+  startTime = 0;
+
+  localStorage.removeItem('timerState');
+  const workoutData = JSON.parse(workout.data);
+  if (workoutData.length <= activeExerciseIndex + 1) {
+    stop();
+    return;
+  }
+  activeExerciseIndex++;
+  localStorage.setItem('workout', JSON.stringify({ workoutUUID: workout.uuid, activeExerciseIndex }));
+
+  const activeExercise = workoutData[activeExerciseIndex];
+  const activeExerciseData = await fetchExercise(activeExercise.id);
+  timerDuration = parseInt(activeExercise.time) * 5;
+  ui.exerciseLabel.innerText = activeExerciseData.name;
+
+  await start();
+}
+
+function stop() {
+  ui.startBtn.textContent = 'Start Workout';
+  clearInterval(timerInterval);
+  pausedTime = 0;
+  startTime = 0;
+  localStorage.removeItem('timerState');
+  localStorage.removeItem('workout');
+  updateDisplay(0);
+  routeTo('workouts');
+}
+
+function updateDisplay(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  const timerDisplay = document.querySelector('#timerDisplay');
+  timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function saveState() {
+  localStorage.setItem('timerState', JSON.stringify({
+    startTime,
+    pausedTime,
+  }));
+}
+
+function loadTimerState() {
+  const savedState = JSON.parse(localStorage.getItem('timerState'));
+  if (savedState) {
+    startTime = savedState.startTime;
+    pausedTime = savedState.pausedTime;
+    if (!startTime) {
+      updateDisplay(timerDuration - Math.floor(pausedTime / 1000));
+    }
+  }
+}
+
+async function fetchWorkout(uuid) {
+  const response = await fetch(`/api/workout/${uuid}`);
+  return await response.json();
+}
+
+async function fetchExercise(id) {
+  const response = await fetch(`/api/exercise/${id}`);
+  return await response.json();
+}
