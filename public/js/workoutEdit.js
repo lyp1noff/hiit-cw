@@ -1,4 +1,4 @@
-import * as router from './router.js';
+import { routeTo } from './router.js';
 
 let exercises = {};
 
@@ -79,7 +79,7 @@ function editExercise(e) {
 }
 
 async function saveWorkout() {
-  const workoutName = document.querySelector('#workout-name');
+  const workoutName = document.querySelector('#workout-name-input');
   if (!workoutName.value) {
     console.log('Empty values');
     return;
@@ -110,14 +110,14 @@ async function saveWorkout() {
 
 function exitWorkout() {
   resetMenu();
-  router.routeTo('workouts');
+  routeTo('workouts');
 }
 
 function resetMenu() {
   const sortableList = document.querySelector('.sortable-list');
   sortableList.innerHTML = '';
   document.querySelector('#exercise-dropdown').selectedIndex = 0;
-  document.querySelector('#workout-name').value = '';
+  document.querySelector('#workout-name-input').value = '';
   document.querySelector('#exercise-time').value = '';
   document.querySelector('#exercise-description').textContent = '';
   updateExerciseDescription();

@@ -1,3 +1,4 @@
+import { fetchWorkout, fetchExercise } from './common.js';
 import { routeTo } from './router.js';
 
 const ui = {};
@@ -49,7 +50,7 @@ async function loadWorkout() {
     const workoutData = JSON.parse(workout.data);
     const activeExercise = workoutData[activeExerciseIndex];
     const activeExerciseData = await fetchExercise(activeExercise.id);
-    timerDuration = parseInt(activeExercise.time) * 5;
+    timerDuration = parseInt(activeExercise.time) * 60;
     ui.exerciseLabel.innerText = activeExerciseData.name;
   }
 }
@@ -100,7 +101,7 @@ async function timerExpired() {
 
   const activeExercise = workoutData[activeExerciseIndex];
   const activeExerciseData = await fetchExercise(activeExercise.id);
-  timerDuration = parseInt(activeExercise.time) * 5;
+  timerDuration = parseInt(activeExercise.time) * 60;
   ui.exerciseLabel.innerText = activeExerciseData.name;
 
   await start();
@@ -140,14 +141,4 @@ function loadTimerState() {
       updateDisplay(timerDuration - Math.floor(pausedTime / 1000));
     }
   }
-}
-
-async function fetchWorkout(uuid) {
-  const response = await fetch(`/api/workout/${uuid}`);
-  return await response.json();
-}
-
-async function fetchExercise(id) {
-  const response = await fetch(`/api/exercise/${id}`);
-  return await response.json();
 }

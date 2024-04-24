@@ -1,8 +1,9 @@
-import * as router from './router.js';
+import { routeTo, showContent } from './router.js';
+import { fetchWorkouts } from './common.js';
 
 export async function loadWorkoutsPage() {
   const addWorkoutBtn = document.querySelector('#addWorkout');
-  addWorkoutBtn.addEventListener('click', () => router.showContent('workout-edit'));
+  addWorkoutBtn.addEventListener('click', () => showContent('workout-edit'));
   await refreshUI();
 }
 
@@ -26,7 +27,7 @@ function openWorkout(e) {
       return;
     }
   }
-  router.routeTo('workout');
+  routeTo('workoutMenu');
 }
 
 async function refreshUI() {
@@ -50,9 +51,4 @@ async function refreshUI() {
       workoutsContainer.appendChild(ul);
     });
   }
-}
-
-async function fetchWorkouts() {
-  const response = await fetch('/api/workouts');
-  return await response.json();
 }

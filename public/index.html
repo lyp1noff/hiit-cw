@@ -35,7 +35,7 @@
     <section class="screen fade-in" data-route="workout-edit">
         <h1>Workout Menu</h1>
         <div class="workout-input">
-            <input id="workout-name" placeholder="Name your Workout">
+            <input id="workout-name-input" placeholder="Name your Workout">
             <div class="exercise-input-wrapper">
                 <select id="exercise-dropdown"></select>
                 <input type="number" id="exercise-time" placeholder="Minutes">
@@ -48,12 +48,20 @@
         <button id="exerciseExit">Exit</button>
     </section>
 
+    <section class="screen fade-in" data-route="workoutMenu">
+        <div class="workout-container">
+            <h1 id="workout-name"></h1>
+            <button id="start-workout">Start Workout</button>
+        </div>
+    </section>
+
     <section class="screen fade-in" data-route="workout">
         <div class="workout-container">
             <h1 id="exerciseLabel"></h1>
             <div id="timerDisplay">00:00</div>
             <button id="startBtn">Start Workout</button>
             <button id="stopBtn">Stop Workout</button>
+            <button id="skipBtn">Next Exercise</button>
         </div>
     </section>
 

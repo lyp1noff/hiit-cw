@@ -1,18 +1,20 @@
-import * as router from './router.js';
+import { routeTo } from './router.js';
 import { loadWorkoutsPage } from './workouts.js';
 import { loadSettingsPage } from './settings.js';
 import { loadWorkoutPage } from './workout.js';
+import { loadWorkoutMenuPage } from './workoutMenu.js';
 import { loadWorkoutEditPage } from './workoutEdit.js';
 
 async function loadPages() {
   loadSettingsPage();
   await loadWorkoutPage();
   await loadWorkoutsPage();
+  await loadWorkoutMenuPage();
   await loadWorkoutEditPage();
 
   document.querySelectorAll('.nav__link').forEach(link => {
     link.addEventListener('click', (e) => {
-      router.routeTo(e.target.dataset.route);
+      routeTo(e.target.dataset.route);
     });
   });
 
@@ -21,7 +23,7 @@ async function loadPages() {
 
 function handleUrlChange() {
   const route = window.location.pathname.substring(5);
-  router.routeTo(route || 'home');
+  routeTo(route || 'home');
 }
 
 document.addEventListener('DOMContentLoaded', loadPages);
