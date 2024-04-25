@@ -1,5 +1,5 @@
 import { fetchWorkout } from './common.js';
-import { showContent } from './router.js';
+import { routeTo } from './router.js';
 
 export async function loadWorkoutMenuPage() {
   await loadWorkout();
@@ -21,7 +21,7 @@ async function loadWorkout() {
 function openWorkout() {
   const workout = localStorage.getItem('workout');
   localStorage.setItem('workout', JSON.stringify({ workoutUUID: JSON.parse(workout).workoutUUID, activeExerciseIndex: 0 }));
-  showContent('workout');
+  routeTo('workout');
 }
 
 async function refreshUI() {

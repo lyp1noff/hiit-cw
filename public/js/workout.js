@@ -14,7 +14,7 @@ export async function loadWorkoutPage() {
   ui.exerciseLabel = document.querySelector('#exerciseLabel');
   ui.startBtn = document.querySelector('#startBtn');
   ui.stopBtn = document.querySelector('#stopBtn');
-  ui.nextBtn = document.querySelector('#stopBtn');
+  ui.nextBtn = document.querySelector('#nextBtn');
 
   ui.startBtn.addEventListener('click', async () => {
     if (!startTime) {
@@ -23,8 +23,13 @@ export async function loadWorkoutPage() {
       pause();
     }
   });
+
   ui.stopBtn.addEventListener('click', () => {
     stop();
+  });
+
+  ui.nextBtn.addEventListener('click', () => {
+    nextExercise();
   });
 
   await loadWorkout();
@@ -73,7 +78,8 @@ async function tick() {
   const remainingSeconds = timerDuration - elapsedTime;
   if (remainingSeconds <= 0) {
     updateDisplay(0);
-    await timerExpired();
+    await nextExercise();
+    await start();
   }
   updateDisplay(remainingSeconds);
 }
@@ -86,7 +92,7 @@ function pause() {
   saveState();
 }
 
-async function timerExpired() {
+async function nextExercise() {
   clearInterval(timerInterval);
   pausedTime = 0;
   startTime = 0;
@@ -104,8 +110,7 @@ async function timerExpired() {
   const activeExerciseData = await fetchExercise(activeExercise.id);
   timerDuration = parseInt(activeExercise.time) * 60;
   ui.exerciseLabel.innerText = activeExerciseData.name;
-
-  await start();
+  pause();
 }
 
 function stop() {
