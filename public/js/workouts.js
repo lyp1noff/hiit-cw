@@ -17,11 +17,13 @@ document.addEventListener('contentChanged', async (e) => {
 function openWorkout(e) {
   const targetWorkoutUUID = e.target.dataset.uuid;
   const workout = localStorage.getItem('workout');
-  if (!workout) {
-    localStorage.setItem('workout', JSON.stringify({ workoutUUID: targetWorkoutUUID, activeExerciseIndex: 0 }));
+  if (!workout || JSON.parse(workout).activeExerciseIndex === -1) {
+    localStorage.setItem('workout', JSON.stringify({ workoutUUID: targetWorkoutUUID, activeExerciseIndex: -1 }));
   } else {
     if (targetWorkoutUUID === JSON.parse(workout).workoutUUID) {
       console.log('This workout is already active.');
+      routeTo('workout');
+      return;
     } else {
       console.log('There is another already active workout.');
       return;

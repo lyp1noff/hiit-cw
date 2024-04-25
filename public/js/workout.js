@@ -14,6 +14,7 @@ export async function loadWorkoutPage() {
   ui.exerciseLabel = document.querySelector('#exerciseLabel');
   ui.startBtn = document.querySelector('#startBtn');
   ui.stopBtn = document.querySelector('#stopBtn');
+  ui.nextBtn = document.querySelector('#stopBtn');
 
   ui.startBtn.addEventListener('click', async () => {
     if (!startTime) {
