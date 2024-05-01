@@ -15,10 +15,44 @@ document.addEventListener('contentChanged', async (e) => {
 });
 
 function openWorkout(e) {
+  if (e.target.tagName !== 'LI') return;
+  if (e.target.classList.contains('active-dropdown')) {
+    e.target.classList.remove('active-dropdown');
+    e.target.removeChild(e.target.querySelector('#dropdown'));
+    return;
+  }
+
   const targetWorkoutUUID = e.target.dataset.uuid;
+  e.target.classList.add('active-dropdown');
+
+  const startButton = document.createElement('button');
+  startButton.id = 'start-workout';
+  startButton.textContent = 'Start';
+  startButton.addEventListener('click', () => startWorkout(targetWorkoutUUID));
+
+  const editButton = document.createElement('button');
+  editButton.id = 'edit-workout';
+  editButton.textContent = 'Edit';
+  editButton.addEventListener('click', () => editWorkout(targetWorkoutUUID));
+
+  const deleteButton = document.createElement('button');
+  deleteButton.id = 'delete-workout';
+  deleteButton.textContent = 'Delete';
+  deleteButton.addEventListener('click', () => deleteWorkout(targetWorkoutUUID));
+
+  const containerDiv = document.createElement('div');
+  containerDiv.id = 'dropdown';
+  containerDiv.appendChild(startButton);
+  containerDiv.appendChild(editButton);
+  containerDiv.appendChild(deleteButton);
+
+  e.target.appendChild(containerDiv);
+}
+
+function startWorkout(targetWorkoutUUID) {
   const workout = localStorage.getItem('workout');
   if (!workout || JSON.parse(workout).activeExerciseIndex === -1) {
-    localStorage.setItem('workout', JSON.stringify({ workoutUUID: targetWorkoutUUID, activeExerciseIndex: -1 }));
+    localStorage.setItem('workout', JSON.stringify({ workoutUUID: targetWorkoutUUID, activeExerciseIndex: 0 }));
   } else {
     if (targetWorkoutUUID === JSON.parse(workout).workoutUUID) {
       console.log('This workout is already active.');
@@ -29,7 +63,15 @@ function openWorkout(e) {
       return;
     }
   }
-  routeTo('workoutMenu');
+  routeTo('workout');
+}
+
+function editWorkout(targetWorkoutUUID) {
+  console.log(targetWorkoutUUID);
+}
+
+function deleteWorkout(targetWorkoutUUID) {
+  console.log(targetWorkoutUUID);
 }
 
 async function refreshUI() {

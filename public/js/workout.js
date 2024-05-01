@@ -51,6 +51,7 @@ document.addEventListener('contentChanged', async (e) => {
 async function loadWorkout() {
   const activeWorkout = JSON.parse(localStorage.getItem('workout'));
   if (activeWorkout) {
+    if (activeWorkout.activeExercise === -1) return;
     workout = await fetchWorkout(activeWorkout.workoutUUID);
     activeExerciseIndex = activeWorkout.activeExerciseIndex;
     const workoutData = JSON.parse(workout.data);
