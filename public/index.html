@@ -4,7 +4,10 @@
 <title>HIIT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <script type="module" src="/js/index.js"></script>
-<link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="shortcut icon" type="image/png" href="img/192.png">
+<link rel="apple-touch-icon" href="img/192.png">
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="/css/index.css">
 <link rel="stylesheet" href="/css/workout.css">
 <link rel="stylesheet" href="/css/workouts.css">
@@ -35,12 +38,13 @@
   </section>
 
   <section class="screen page" data-route="workout-edit">
-    <h1>Workout Menu</h1>
+    <h1>Workout Edit</h1>
     <div class="workout-input">
       <input id="workout-name-input" placeholder="Name your Workout">
       <div class="exercise-input-wrapper">
         <select id="exercise-dropdown"></select>
-        <input type="number" id="exercise-time" placeholder="Minutes">
+        <input type="number" id="exercise-minutes" class="exercise-input" placeholder="Minutes">
+        <input type="number" id="exercise-seconds" class="exercise-input" placeholder="Seconds">
         <button id="exerciseAddBtn">Add Exercise</button>
       </div>
       <p id="exercise-description"></p>
@@ -90,7 +94,7 @@
     <div class="details">
       <span>{text}</span>
     </div>
-    <button id="exercise-edit">Edit</button>
+    <!-- <button id="exercise-edit">Edit</button> -->
     <button id="exercise-remove">Remove</button>
     <!--<i class="uil uil-draggabledots"></i>-->
   </li>

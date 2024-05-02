@@ -40,9 +40,12 @@ function updateExerciseDescription() {
 function addExercise() {
   const exerciseDropdown = document.querySelector('#exercise-dropdown');
   const selectedOption = exerciseDropdown.options[exerciseDropdown.selectedIndex];
-  const exerciseTime = document.querySelector('#exercise-time');
+  const exerciseMinutes = document.querySelector('#exercise-minutes');
+  const exerciseSeconds = document.querySelector('#exercise-seconds');
+  const minutes = exerciseMinutes.value.trim() === '' ? 0 : parseInt(exerciseMinutes.value);
+  const seconds = exerciseSeconds.value.trim() === '' ? 0 : parseInt(exerciseSeconds.value);
 
-  if (!exerciseTime.value || !exerciseDropdown.value) {
+  if (!(minutes || seconds) || !exerciseDropdown.value) {
     console.log('Empty values');
     return;
   }
@@ -50,14 +53,14 @@ function addExercise() {
   const template = document.querySelector('#exerciseItemTemplate');
   const cloned = template.content.cloneNode(true);
   const span = cloned.querySelector('span');
-  span.innerText = `${selectedOption.textContent} (${exerciseTime.value} min)`;
+  span.innerText = `${selectedOption.textContent} (${minutes} min, ${seconds} sec)`;
+
   span.dataset.id = exerciseDropdown.value;
-  span.dataset.time = exerciseTime.value;
+  const exerciseTime = minutes * 60 + seconds;
+  span.dataset.time = exerciseTime;
 
   const removeBtn = cloned.querySelector('#exercise-remove');
   removeBtn.addEventListener('click', removeExercise);
-  const editBtn = cloned.querySelector('#exercise-edit');
-  editBtn.addEventListener('click', editExercise);
 
   const sortableList = document.querySelector('.sortable-list');
   sortableList.append(cloned);
@@ -73,10 +76,6 @@ function addExercise() {
 
 function removeExercise(e) {
   e.currentTarget.parentElement.remove();
-}
-
-function editExercise(e) {
-  console.log(e.currentTarget.parentElement);
 }
 
 async function saveWorkout() {
@@ -113,7 +112,8 @@ function resetMenu() {
   sortableList.innerHTML = '';
   document.querySelector('#exercise-dropdown').selectedIndex = 0;
   document.querySelector('#workout-name-input').value = '';
-  document.querySelector('#exercise-time').value = '';
+  document.querySelector('#exercise-minutes').value = '';
+  document.querySelector('#exercise-seconds').value = '';
   document.querySelector('#exercise-description').textContent = '';
   updateExerciseDescription();
 }

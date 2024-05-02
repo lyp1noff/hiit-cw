@@ -56,7 +56,7 @@ async function loadWorkout() {
     const workoutData = JSON.parse(workout.data);
     const activeExercise = workoutData[activeExerciseIndex];
     const activeExerciseData = await fetchExercise(activeExercise.id);
-    timerDuration = parseInt(activeExercise.time) * 60;
+    timerDuration = parseInt(activeExercise.time);
     ui.exerciseLabel.innerText = activeExerciseData.name;
   }
 }
@@ -108,7 +108,7 @@ async function nextExercise() {
 
   const activeExercise = workoutData[activeExerciseIndex];
   const activeExerciseData = await fetchExercise(activeExercise.id);
-  timerDuration = parseInt(activeExercise.time) * 60;
+  timerDuration = parseInt(activeExercise.time);
   ui.exerciseLabel.innerText = activeExerciseData.name;
   updateDisplay(0);
   ui.startBtn.textContent = 'Start';

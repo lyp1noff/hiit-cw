@@ -1,0 +1,24 @@
+{
+    "name": "HIIT App",
+    "short_name": "HIIT",
+    "icons": [
+        {
+            "src": "./img/192.png",
+            "type": "image/png",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "./img/512.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "any maskable"
+        }
+    ],
+    "display": "standalone",
+    "start_url": "./app/home",
+    "background_color": "#ffffff",
+    "scope": "./",
+    "theme_color": "#ffffff",
+    "prefer_related_applications": false
+}
