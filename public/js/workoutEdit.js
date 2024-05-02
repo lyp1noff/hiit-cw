@@ -1,4 +1,5 @@
 import { routeTo } from './router.js';
+import { postWorkouts } from './common.js';
 
 let exercises = {};
 
@@ -97,13 +98,7 @@ async function saveWorkout() {
 
   const name = workoutName.value;
   const data = JSON.stringify(exercises);
-  await fetch('/api/workouts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, data }),
-  });
+  await postWorkouts(name, data);
 
   await exitWorkout();
 }

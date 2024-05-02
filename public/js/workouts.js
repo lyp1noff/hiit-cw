@@ -1,5 +1,5 @@
 import { routeTo, showContent } from './router.js';
-import { fetchWorkouts } from './common.js';
+import { deleteWorkout, fetchWorkouts } from './common.js';
 
 export async function loadWorkoutsPage() {
   const addWorkoutBtn = document.querySelector('#addWorkout');
@@ -15,15 +15,24 @@ document.addEventListener('contentChanged', async (e) => {
 });
 
 function openWorkout(e) {
-  if (e.target.tagName !== 'LI') return;
-  if (e.target.classList.contains('active-dropdown')) {
-    e.target.classList.remove('active-dropdown');
-    e.target.removeChild(e.target.querySelector('#dropdown'));
+  const elem = e.target;
+
+  if (elem.tagName !== 'LI') return;
+
+  if (elem.classList.contains('active-dropdown')) {
+    elem.classList.remove('active-dropdown');
+    elem.removeChild(elem.querySelector('.dropdown'));
     return;
   }
 
-  const targetWorkoutUUID = e.target.dataset.uuid;
-  e.target.classList.add('active-dropdown');
+  const dropdowns = document.querySelectorAll('.active-dropdown');
+  dropdowns.forEach(dropdown => {
+    dropdown.classList.remove('active-dropdown');
+    dropdown.removeChild(dropdown.querySelector('.dropdown'));
+  });
+
+  const targetWorkoutUUID = elem.dataset.uuid;
+  elem.classList.add('active-dropdown');
 
   const startButton = document.createElement('button');
   startButton.id = 'start-workout';
@@ -33,25 +42,25 @@ function openWorkout(e) {
   const editButton = document.createElement('button');
   editButton.id = 'edit-workout';
   editButton.textContent = 'Edit';
-  editButton.addEventListener('click', () => editWorkout(targetWorkoutUUID));
+  editButton.addEventListener('click', () => editWorkoutButtonClick(targetWorkoutUUID));
 
   const deleteButton = document.createElement('button');
   deleteButton.id = 'delete-workout';
   deleteButton.textContent = 'Delete';
-  deleteButton.addEventListener('click', () => deleteWorkout(targetWorkoutUUID));
+  deleteButton.addEventListener('click', () => deleteWorkoutButtonClick(targetWorkoutUUID));
 
   const containerDiv = document.createElement('div');
-  containerDiv.id = 'dropdown';
+  containerDiv.className = 'dropdown';
   containerDiv.appendChild(startButton);
   containerDiv.appendChild(editButton);
   containerDiv.appendChild(deleteButton);
 
-  e.target.appendChild(containerDiv);
+  elem.appendChild(containerDiv);
 }
 
 function startWorkout(targetWorkoutUUID) {
   const workout = localStorage.getItem('workout');
-  if (!workout || JSON.parse(workout).activeExerciseIndex === -1) {
+  if (!workout) {
     localStorage.setItem('workout', JSON.stringify({ workoutUUID: targetWorkoutUUID, activeExerciseIndex: 0 }));
   } else {
     if (targetWorkoutUUID === JSON.parse(workout).workoutUUID) {
@@ -66,12 +75,13 @@ function startWorkout(targetWorkoutUUID) {
   routeTo('workout');
 }
 
-function editWorkout(targetWorkoutUUID) {
+function editWorkoutButtonClick(targetWorkoutUUID) {
   console.log(targetWorkoutUUID);
 }
 
-function deleteWorkout(targetWorkoutUUID) {
-  console.log(targetWorkoutUUID);
+async function deleteWorkoutButtonClick(targetWorkoutUUID) {
+  await deleteWorkout(targetWorkoutUUID);
+  await refreshUI();
 }
 
 async function refreshUI() {

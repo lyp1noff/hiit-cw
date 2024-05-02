@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(express.json());
 
-const serverIP = 'localhost';
+const serverIP = '0.0.0.0';
 const serverPort = 8080;
 const googleRedirectUrl = `http://${serverIP}:${serverPort}/auth/google/callback`;
 const googleClientId = config.googleClientId;
@@ -104,6 +104,17 @@ app.get('/api/workout/:uuid', async (req, res) => {
     res.status(404).json({ error: 'SQL error' });
   }
 });
+
+app.delete('/api/workout/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  const data = await db.deleteWorkout(uuid);
+  if (data) {
+    res.json(data);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
+  }
+});
+
 
 app.get('/api/workouts', async (req, res) => {
   const data = await db.getWorkouts();

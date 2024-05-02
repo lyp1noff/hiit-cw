@@ -27,7 +27,12 @@ export async function getExercises() {
 export async function addWorkout(name, data) {
   const uuid = uuidv4();
   const db = await dbConn;
-  await db.run('INSERT INTO workouts (uuid, name, data) VALUES (?, ?, ?)', [uuid, name, data]);
+  return await db.run('INSERT INTO workouts (uuid, name, data) VALUES (?, ?, ?)', [uuid, name, data]);
+}
+
+export async function deleteWorkout(uuid) {
+  const db = await dbConn;
+  return await db.run('DELETE FROM workouts WHERE uuid = ?', [uuid]);
 }
 
 export async function getWorkout(uuid) {
@@ -47,5 +52,5 @@ export async function getUsers() {
 
 export async function addUser(name, email) {
   const db = await dbConn;
-  await db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
+  return await db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
 }

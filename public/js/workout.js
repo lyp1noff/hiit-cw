@@ -51,7 +51,6 @@ document.addEventListener('contentChanged', async (e) => {
 async function loadWorkout() {
   const activeWorkout = JSON.parse(localStorage.getItem('workout'));
   if (activeWorkout) {
-    if (activeWorkout.activeExercise === -1) return;
     workout = await fetchWorkout(activeWorkout.workoutUUID);
     activeExerciseIndex = activeWorkout.activeExerciseIndex;
     const workoutData = JSON.parse(workout.data);
@@ -111,7 +110,8 @@ async function nextExercise() {
   const activeExerciseData = await fetchExercise(activeExercise.id);
   timerDuration = parseInt(activeExercise.time) * 60;
   ui.exerciseLabel.innerText = activeExerciseData.name;
-  pause();
+  updateDisplay(0);
+  ui.startBtn.textContent = 'Start';
 }
 
 function stop() {

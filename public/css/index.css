@@ -117,14 +117,15 @@ nav ul li a {
     }
 }
 
-.fade-in {
+.page {
     opacity: 0;
     position: absolute;
     visibility: hidden;
-    transition: opacity 0.3s ease-in-out, display 0s 0.3s;
+    transition: opacity 0.3s ease-in-out;
+    height: 0;
 }
 
-.fade-in.active {
+.page.active {
     opacity: 1;
     position: static;
     visibility: visible;
