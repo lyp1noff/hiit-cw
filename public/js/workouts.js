@@ -92,6 +92,14 @@ function editWorkoutButtonClick(targetWorkoutUUID) {
 }
 
 async function deleteWorkoutButtonClick(targetWorkoutUUID) {
+  const workout = localStorage.getItem('workout');
+  if (workout) {
+    const activeWorkoutUUID = JSON.parse(workout).workoutUUID;
+    if (targetWorkoutUUID === activeWorkoutUUID) {
+      showAlert('Warning', 'You cannot delete an active workout.');
+      return;
+    }
+  }
   await deleteWorkout(targetWorkoutUUID);
   await refreshUI();
 }

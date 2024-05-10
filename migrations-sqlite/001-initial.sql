@@ -61,21 +61,21 @@ VALUES
         'Explosive Power Blast',
         '[{"id":"3","time":30},{"id":"1","time":30},{"id":"3","time":30},{"id":"1","time":30},{"id":"3","time":30},{"id":"1","time":60},{"id":"2","time":40},{"id":"1","time":20},{"id":"2","time":40},{"id":"1","time":20},{"id":"2","time":40},{"id":"1","time":60},{"id":"4","time":45},{"id":"1","time":15},{"id":"4","time":45},{"id":"1","time":15},{"id":"4","time":45},{"id":"1","time":60}]',
         'This high-intensity interval training (HIIT) session focuses on explosive movements to maximize power and cardiovascular endurance.',
-        '../img/workouts/1.jpg'
+        '../img/workouts/1.webp'
     ),
     (
         'a7a86c54-9caa-4877-bf56-07a7d41a898e',
         'Cardio Inferno',
         '[{"id":"5","time":45},{"id":"1","time":15},{"id":"5","time":45},{"id":"1","time":15},{"id":"5","time":45},{"id":"1","time":60},{"id":"3","time":60},{"id":"1","time":30},{"id":"3","time":60},{"id":"1","time":30},{"id":"3","time":60},{"id":"1","time":60},{"id":"6","time":40},{"id":"1","time":20},{"id":"6","time":40},{"id":"1","time":20},{"id":"6","time":40},{"id":"1","time":60}]',
         'This HIIT session is designed to ignite your cardiovascular system, torch calories, and improve endurance.',
-        '../img/workouts/2.jpg'
+        '../img/workouts/2.webp'
     ),
     (
         'b1e6df44-fd41-46c6-94a2-9b7a5bd9e9d0',
         'Full Body Blitz',
         '[{"id":"2","time":30},{"id":"1","time":30},{"id":"2","time":30},{"id":"1","time":30},{"id":"2","time":30},{"id":"1","time":60},{"id":"4","time":40},{"id":"1","time":20},{"id":"4","time":40},{"id":"1","time":20},{"id":"4","time":40},{"id":"1","time":60},{"id":"6","time":45},{"id":"1","time":15},{"id":"6","time":45},{"id":"1","time":15},{"id":"6","time":45},{"id":"1","time":60}]',
         'This HIIT routine integrates a variety of exercises to challenge multiple muscle groups and elevate heart rate for maximum calorie burn.',
-        '../img/workouts/3.jpg'
+        '../img/workouts/3.webp'
     );
 
 -- Down

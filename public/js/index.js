@@ -9,6 +9,7 @@ import { generateUUID, postUser } from './common.js';
 async function init() {
   await userAuth();
   await loadPages();
+  await registerServiceWorker();
 }
 
 async function userAuth() {
@@ -27,13 +28,19 @@ async function loadPages() {
   await loadWorkoutEditPage();
   await loadHomePage();
 
-  document.querySelectorAll('.nav__link').forEach(link => {
+  document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
       routeTo(e.target.dataset.route);
     });
   });
 
   await handleUrlChange();
+}
+
+async function registerServiceWorker() {
+  if (navigator.serviceWorker) {
+    await navigator.serviceWorker.register('/js/sw.js');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', init);
