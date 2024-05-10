@@ -20,9 +20,7 @@ export function showAlert(header, message) {
   alertBoxMessage.textContent = message;
   alertBox.style.display = 'block';
 
-  setTimeout(function () {
-    alertBox.style.display = 'none';
-  }, 3000);
+  setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
 }
 
 export async function generateUUID() {

@@ -87,6 +87,14 @@ function startWorkout(targetWorkoutUUID) {
 }
 
 function editWorkoutButtonClick(targetWorkoutUUID) {
+  const workout = localStorage.getItem('workout');
+  if (workout) {
+    const activeWorkoutUUID = JSON.parse(workout).workoutUUID;
+    if (targetWorkoutUUID === activeWorkoutUUID) {
+      showAlert('Warning', 'You cannot edit an active workout.');
+      return;
+    }
+  }
   localStorage.setItem('workoutEdit', JSON.stringify({ workoutUUID: targetWorkoutUUID }));
   showContent('workout-edit');
 }

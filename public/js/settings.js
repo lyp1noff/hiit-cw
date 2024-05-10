@@ -23,9 +23,11 @@ async function restoreSession() {
   }
 
   localStorage.setItem('user', res.uuid);
-  showAlert('Success', 'Session restored!');
+  localStorage.removeItem('timerState');
+  localStorage.removeItem('workout');
   inputField.value = '';
   updateLabel();
+  showAlert('Success', 'Session restored!');
 }
 
 function updateLabel() {
@@ -37,4 +39,5 @@ function copyUUID() {
   const uuidLabel = document.querySelector('#uuid-label');
   const uuid = uuidLabel.innerText;
   navigator.clipboard.writeText(uuid);
+  showAlert('Success', 'UUID copied to clipboard.');
 }

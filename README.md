@@ -30,7 +30,7 @@ Alert box shows alerts on top of the page and hides after 3 seconds.
 Events are used to track the current page, as SPA makes it a bit tricky. With the help of CustomEvent, js files are able to track the current page and run tasks on their page open.
 
 ### Template
-Templates helped to create dynamic elements. It was used to create workout presets using template for list elements and dynamic workout cards on the home page. 
+Templates helped to create dynamic elements. It was used for list elements in workout editor and dynamic workout cards on the home page. 
 
 
 ## AI
@@ -52,7 +52,7 @@ The suggestion worked, but still had to change and remove a huge amount of usele
 
 
 ### Prompts to develop message box
-A sequence of prompts did not help me almost at all, so I found solution by myself:
+A sequence of prompts did help me a bit, I found solution by myself:
 
 >  web app html+css+js. template for alert box
 
