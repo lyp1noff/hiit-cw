@@ -80,6 +80,16 @@ const serverPort = 8080;
 //   }
 // });
 
+app.post('/api/exercise', async (req, res) => {
+  const { uuid, name, description } = req.body;
+  const data = await db.addExercise(uuid, name, description);
+  if (data) {
+    res.json({ lastID: data.lastID });
+  } else {
+    res.status(404).json({ error: 'SQL error' });
+  }
+});
+
 app.get('/api/exercise/:id', async (req, res) => {
   const id = req.params.id;
   const data = await db.getExercise(id);
@@ -90,8 +100,9 @@ app.get('/api/exercise/:id', async (req, res) => {
   }
 });
 
-app.get('/api/exercises', async (req, res) => {
-  const data = await db.getExercises();
+app.get('/api/exercises/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  const data = await db.getExercises(uuid);
   if (data) {
     res.json(data);
   } else {

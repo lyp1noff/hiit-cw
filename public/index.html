@@ -42,13 +42,17 @@
 
   <section class="screen page" data-route="workout-edit">
     <h1>Workout Edit</h1>
-    <div class="editor-workout-input">
-      <input id="editor-workout-name-input" placeholder="Name your Workout">
+    <div class="editor-workout-input-wrapper">
+      <input class="editor-workout-input" id="editor-workout-name-input" placeholder="Name your Workout">
       <div class="editor-exercise-input-wrapper">
         <select id="exercise-dropdown"></select>
         <input type="number" id="exercise-minutes" class="exercise-input" placeholder="Minutes">
         <input type="number" id="exercise-seconds" class="exercise-input" placeholder="Seconds">
         <button id="add-exercise">Add Exercise</button>
+      </div>
+      <div class="editor-workout-custom">
+        <input class="editor-workout-input" id="editor-workout-custom-name-input" placeholder="Name your exercise">
+        <input class="editor-workout-input" id="editor-workout-custom-desc-input" placeholder="Describe your exercise">
       </div>
       <p id="editor-exercise-description"></p>
     </div>

@@ -44,7 +44,7 @@ export async function deleteWorkout(uuid) {
 }
 
 export async function editWorkout(uuid, newName, newData) {
-  await fetch(`/api/workout/${uuid}`, {
+  return await fetch(`/api/workout/${uuid}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -56,13 +56,24 @@ export async function editWorkout(uuid, newName, newData) {
   });
 }
 
+export async function postExercise(uuid, name, description) {
+  const data = await fetch('/api/exercise', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ uuid, name, description }),
+  });
+  return await data.json();
+}
+
 export async function fetchExercise(id) {
   const response = await fetch(`/api/exercise/${id}`);
   return await response.json();
 }
 
-export async function fetchExercises() {
-  const response = await fetch('/api/exercises');
+export async function fetchExercises(uuid) {
+  const response = await fetch(`/api/exercises/${uuid}`);
   return await response.json();
 }
 
@@ -77,7 +88,7 @@ export async function fetchGlobalWorkouts() {
 }
 
 export async function postWorkout(userUUID, name, data) {
-  await fetch('/api/workout', {
+  return await fetch('/api/workout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -87,7 +98,7 @@ export async function postWorkout(userUUID, name, data) {
 }
 
 export async function postUser(uuid) {
-  await fetch('/api/user', {
+  return await fetch('/api/user', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

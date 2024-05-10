@@ -11,6 +11,9 @@ The homepage showcases customisable workout presets loaded dynamically from the 
 ### Workout editor
 Workout editor asks for a name for your workout, gives you to choose exercises from the database, specify time for that exercise and shows a brief description. Exercises could be deleted and moved using drag-and-drop.
 
+### Custom exercises
+In workout editor user can select custom option to create a new exercise. It asks for a name, description that exercise. Custom exercises are saved in the database and can be used in the future.
+
 ### Workout page
 Workout page shows name of the exercise, description, timer and buttons. One button is used to start, pause or resume workout alongside with stop workout and next exercise buttons.
 

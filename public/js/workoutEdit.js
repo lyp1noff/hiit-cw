@@ -5,17 +5,16 @@ import {
   editWorkout,
   fetchExercise,
   fetchExercises,
-  fetchWorkout, getUserUUID,
+  fetchWorkout, getUserUUID, postExercise,
   postWorkout, showAlert,
 } from './common.js';
 
 let exercises = {};
 
 export async function loadWorkoutEditPage() {
-  exercises = await fetchExercises();
-
-  updateExerciseDropdown();
-  updateExerciseDescription();
+  const exerciseDropdown = document.querySelector('#exercise-dropdown');
+  exerciseDropdown.addEventListener('change', updateExerciseDescription);
+  await updateExerciseDropdown();
 
   document.querySelector('#add-exercise').addEventListener('click', addExerciseClick);
   document.querySelector('#save-exercise').addEventListener('click', saveWorkout);
@@ -29,7 +28,7 @@ export async function loadWorkoutEditPage() {
 document.addEventListener('contentChanged', async (e) => {
   const activeSection = e.detail.route === 'workout-edit';
   if (activeSection) {
-    resetMenu();
+    await resetMenu();
     await activeWorkoutEdit();
     await activeWorkoutExport();
   } else {
@@ -63,7 +62,10 @@ async function activeWorkoutEdit() {
   document.querySelector('#editor-workout-name-input').value = workout.name;
 }
 
-function updateExerciseDropdown() {
+async function updateExerciseDropdown() {
+  exercises = await fetchExercises(getUserUUID());
+  exercises.push({ id: '0', name: 'Custom', description: '' });
+
   const exerciseDropdown = document.querySelector('#exercise-dropdown');
   exerciseDropdown.innerHTML = '';
   exercises.forEach(exercise => {
@@ -72,33 +74,62 @@ function updateExerciseDropdown() {
     option.textContent = exercise.name;
     exerciseDropdown.appendChild(option);
   });
-  exerciseDropdown.addEventListener('change', updateExerciseDescription);
+  updateExerciseDescription();
 }
 
 function updateExerciseDescription() {
   const exerciseDropdown = document.querySelector('#exercise-dropdown');
   const exerciseDescription = document.querySelector('#editor-exercise-description');
+  const customInput = document.querySelector('.editor-workout-custom');
+
+  exerciseDescription.style.display = 'block';
+  customInput.style.display = 'none';
+
+  if (exerciseDropdown.value === '0') {
+    exerciseDescription.style.display = 'none';
+    customInput.style.display = 'flex';
+    return;
+  }
+
   const selectedExerciseData = exercises.find(exercise => exercise.id === parseInt(exerciseDropdown.value));
   exerciseDescription.textContent = selectedExerciseData.description;
 }
 
-function addExerciseClick() {
-  const exerciseDropdown = document.querySelector('#exercise-dropdown');
-  const selectedOption = exerciseDropdown.options[exerciseDropdown.selectedIndex];
-
-  const exerciseName = selectedOption.textContent;
-  const exerciseId = exerciseDropdown.value;
-
+async function addExerciseClick() {
   const exerciseMinutes = document.querySelector('#exercise-minutes');
   const exerciseSeconds = document.querySelector('#exercise-seconds');
   const minutes = exerciseMinutes.value.trim() === '' ? 0 : parseInt(exerciseMinutes.value);
   const seconds = exerciseSeconds.value.trim() === '' ? 0 : parseInt(exerciseSeconds.value);
 
-  if (!(minutes || seconds) || !exerciseDropdown.value) {
+  if (!(minutes || seconds)) {
     showAlert('Error', 'Enter time for exercise');
     return;
   }
 
+  const exerciseDropdown = document.querySelector('#exercise-dropdown');
+  if (exerciseDropdown.value === '0') {
+    const customExerciseName = document.querySelector('#editor-workout-custom-name-input');
+    const customExerciseDescription = document.querySelector('#editor-workout-custom-desc-input');
+    if (!customExerciseName.value) {
+      showAlert('Error', 'Enter name for custom exercise');
+      return;
+    }
+    const res = await postExercise(getUserUUID(), customExerciseName.value, customExerciseDescription.value);
+    addExercise(customExerciseName.value, res.lastID, minutes, seconds);
+    await updateExerciseDropdown();
+    for (let i = 0; i < exerciseDropdown.childElementCount; i++) {
+      if (parseInt(exerciseDropdown.options[i].value) === res.lastID) {
+        exerciseDropdown.selectedIndex = i;
+        break;
+      }
+    }
+    updateExerciseDescription();
+    return;
+  }
+
+  const selectedOption = exerciseDropdown.options[exerciseDropdown.selectedIndex];
+  const exerciseName = selectedOption.textContent;
+  const exerciseId = exerciseDropdown.value;
   addExercise(exerciseName, exerciseId, minutes, seconds);
 }
 
@@ -154,22 +185,22 @@ async function saveWorkout() {
   const activeWorkout = JSON.parse(localStorage.getItem('workoutEdit'));
   if (activeWorkout) {
     await editWorkout(activeWorkout.workoutUUID, name, data);
-    exitWorkout();
+    await exitWorkout();
     return;
   }
 
   await postWorkout(getUserUUID(), name, data);
-  exitWorkout();
+  await exitWorkout();
 }
 
-function exitWorkout() {
+async function exitWorkout() {
   localStorage.removeItem('workoutEdit');
   localStorage.removeItem('workoutExport');
-  resetMenu();
+  await resetMenu();
   routeTo('workouts');
 }
 
-function resetMenu() {
+async function resetMenu() {
   const sortableList = document.querySelector('.sortable-list');
   sortableList.innerHTML = '';
   sortableList.style.display = 'none';
@@ -178,7 +209,7 @@ function resetMenu() {
   document.querySelector('#exercise-minutes').value = '';
   document.querySelector('#exercise-seconds').value = '';
   document.querySelector('#editor-exercise-description').textContent = '';
-  updateExerciseDescription();
+  await updateExerciseDropdown();
 }
 
 const initSortableList = (e) => {

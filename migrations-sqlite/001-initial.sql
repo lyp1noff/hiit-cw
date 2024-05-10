@@ -1,16 +1,17 @@
 -- Up
 CREATE TABLE exercise (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name CHAR(36) NOT NULL,
+    uuid TEXT,
+    name TEXT NOT NULL,
     description TEXT NOT NULL
 );
 
 CREATE TABLE workout (
     uuid CHAR(36) NOT NULL,
     name CHAR(36) NOT NULL,
-    data text NOT NULL,
-    description text,
-    image_url text
+    data TEXT NOT NULL,
+    description TEXT,
+    image_url TEXT
 );
 
 CREATE TABLE user (
@@ -30,27 +31,27 @@ INSERT INTO
 VALUES
     (
         'Rest',
-        'Just take a deep breath.'
+        'This is simply a period of recovery between exercises or sets. It''s important to take rest breaks to allow your body to recover and replenish energy.'
     ),
     (
         'Push-up',
-        'Push-ups are a great exercise for building upper body strength, particularly in the chest, shoulders, and triceps.'
+        'Start in a plank position with your hands slightly wider than shoulder-width apart. Lower your body until your chest nearly touches the floor, then push back up to the starting position, keeping your body in a straight line throughout the movement.'
     ),
     (
         'Burpee',
-        'Burpees are a full-body exercise that targets multiple muscle groups, including the chest, shoulders, arms, quads, glutes, and core.'
+        'Begin in a standing position, then squat down and place your hands on the floor in front of you. Jump your feet back into a plank position, perform a push-up, then jump your feet back towards your hands. Finally, explode upwards into a jump, reaching your arms overhead'
     ),
     (
         'Mountain climber',
-        'Mountain climbers are a dynamic exercise that targets multiple muscle groups, including the core, shoulders, and legs, while also improving cardiovascular fitness.'
+        'Start in a plank position with your hands directly under your shoulders. Bring one knee towards your chest, then quickly switch legs, bringing the other knee towards your chest. Continue alternating legs at a fast pace, as if you''re climbing a mountain.'
     ),
     (
         'Jumping jack',
-        'Jumping jacks are a simple yet effective cardiovascular exercise that engages the entire body and increases heart rate.'
+        'Start standing with your feet together and your arms at your sides. Jump your feet out to the sides while simultaneously raising your arms above your head. Then, jump back to the starting position.'
     ),
     (
         'Kettlebell swing',
-        'Kettlebell swings are a powerful exercise that targets the posterior chain, including the glutes, hamstrings, and lower back, while also improving grip strength and cardiovascular endurance.'
+        'Stand with your feet shoulder-width apart and hold a kettlebell with both hands in front of your body. Hinge at your hips and bend your knees slightly, then swing the kettlebell back between your legs. Explosively drive your hips forward and swing the kettlebell up to chest level, keeping your arms straight. Control the swing as it lowers back down between your legs and repeat.'
     );
 
 INSERT INTO

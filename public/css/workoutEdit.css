@@ -58,7 +58,7 @@
     opacity: 0;
 }
 
-.editor-workout-input {
+.editor-workout-input-wrapper {
     display: flex;
     flex-direction: column;
     margin: 20px auto;
@@ -69,7 +69,7 @@
     background-color: #f9f9f9;
 }
 
-#editor-workout-name-input {
+.editor-workout-input {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -114,6 +114,15 @@
     font-size: 16px;
     text-align: center;
     margin: 6px 20px 6px 20px;
+}
+
+.editor-workout-custom {
+    flex-direction: column;
+    display: none;
+}
+
+.editor-workout-custom #editor-workout-custom-desc-input {
+    margin: 0;
 }
 
 @media (max-width: 980px) {

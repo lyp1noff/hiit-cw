@@ -36,14 +36,19 @@ async function deleteUserToWorkout(workoutUUID) {
   return await db.run('DELETE FROM user_to_workout WHERE workout_uuid = ?', [workoutUUID]);
 }
 
+export async function addExercise(uuid, name, description) {
+  const db = await dbConn;
+  return await db.run('INSERT INTO exercise (uuid, name, description) VALUES (?, ?, ?)', [uuid, name, description]);
+}
+
 export async function getExercise(id) {
   const db = await dbConn;
   return await db.get('SELECT * FROM exercise WHERE id = ?', [id]);
 }
 
-export async function getExercises() {
+export async function getExercises(uuid) {
   const db = await dbConn;
-  return await db.all('SELECT * FROM exercise');
+  return await db.all('SELECT * FROM exercise WHERE uuid IS NULL OR uuid = ?', [uuid]);
 }
 
 export async function addWorkout(uuid, name, data) {
