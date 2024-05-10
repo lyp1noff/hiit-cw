@@ -22,7 +22,7 @@
     list-style: none;
     background: #fff;
     border-radius: 5px;
-    padding: 6px;
+    padding: 8px 12px 8px 12px;
     margin: 10px;
     border: 1px solid #ccc;
     user-select: none;
@@ -38,8 +38,9 @@
 }
 
 .dropdown button {
-    margin: 2px;
+    margin: 3px;
     padding: 5px;
     font-size: 14px;
     width: 100%;
+    max-width: 100px;
 }

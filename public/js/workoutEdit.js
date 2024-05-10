@@ -1,5 +1,13 @@
 import { routeTo } from './router.js';
-import { postWorkouts } from './common.js';
+import {
+  convertToSeconds,
+  convertToTimeComponents,
+  editWorkout,
+  fetchExercise,
+  fetchExercises,
+  fetchWorkout, getUserUUID,
+  postWorkout,
+} from './common.js';
 
 let exercises = {};
 
@@ -9,13 +17,50 @@ export async function loadWorkoutEditPage() {
   updateExerciseDropdown();
   updateExerciseDescription();
 
-  document.querySelector('#exerciseAddBtn').addEventListener('click', addExercise);
-  document.querySelector('#exerciseSave').addEventListener('click', saveWorkout);
-  document.querySelector('#exerciseExit').addEventListener('click', exitWorkout);
+  document.querySelector('#add-exercise').addEventListener('click', addExerciseClick);
+  document.querySelector('#save-exercise').addEventListener('click', saveWorkout);
+  document.querySelector('#exit-exercise').addEventListener('click', exitWorkout);
 
   const sortableList = document.querySelector('.sortable-list');
   sortableList.addEventListener('dragover', initSortableList);
   sortableList.addEventListener('dragenter', e => e.preventDefault());
+}
+
+document.addEventListener('contentChanged', async (e) => {
+  const activeSection = e.detail.route === 'workout-edit';
+  if (activeSection) {
+    resetMenu();
+    await activeWorkoutEdit();
+    await activeWorkoutExport();
+  } else {
+    localStorage.removeItem('workoutEdit');
+    localStorage.removeItem('workoutExport');
+  }
+});
+
+async function activeWorkoutExport() {
+  const activeWorkoutExportData = JSON.parse(localStorage.getItem('workoutExport'));
+  if (!activeWorkoutExportData) return;
+  for (const exercise of JSON.parse(activeWorkoutExportData.data)) {
+    const fetchedExercise = await fetchExercise(exercise.id);
+    const { minutes, seconds } = convertToTimeComponents(exercise.time);
+    addExercise(fetchedExercise.name, exercise.id, minutes, seconds);
+  }
+  document.querySelector('#editor-workout-name-input').value = activeWorkoutExportData.name;
+}
+
+async function activeWorkoutEdit() {
+  const activeWorkoutEditData = JSON.parse(localStorage.getItem('workoutEdit'));
+  if (!activeWorkoutEditData) return;
+
+  const workout = await fetchWorkout(activeWorkoutEditData.workoutUUID);
+  const workoutData = JSON.parse(workout.data);
+  for (const exercise of workoutData) {
+    const fetchedExercise = await fetchExercise(exercise.id);
+    const { minutes, seconds } = convertToTimeComponents(exercise.time);
+    addExercise(fetchedExercise.name, exercise.id, minutes, seconds);
+  }
+  document.querySelector('#editor-workout-name-input').value = workout.name;
 }
 
 function updateExerciseDropdown() {
@@ -32,14 +77,18 @@ function updateExerciseDropdown() {
 
 function updateExerciseDescription() {
   const exerciseDropdown = document.querySelector('#exercise-dropdown');
-  const exerciseDescription = document.querySelector('#exercise-description');
+  const exerciseDescription = document.querySelector('#editor-exercise-description');
   const selectedExerciseData = exercises.find(exercise => exercise.id === parseInt(exerciseDropdown.value));
   exerciseDescription.textContent = selectedExerciseData.description;
 }
 
-function addExercise() {
+function addExerciseClick() {
   const exerciseDropdown = document.querySelector('#exercise-dropdown');
   const selectedOption = exerciseDropdown.options[exerciseDropdown.selectedIndex];
+
+  const exerciseName = selectedOption.textContent;
+  const exerciseId = exerciseDropdown.value;
+
   const exerciseMinutes = document.querySelector('#exercise-minutes');
   const exerciseSeconds = document.querySelector('#exercise-seconds');
   const minutes = exerciseMinutes.value.trim() === '' ? 0 : parseInt(exerciseMinutes.value);
@@ -50,36 +99,40 @@ function addExercise() {
     return;
   }
 
-  const template = document.querySelector('#exerciseItemTemplate');
+  addExercise(exerciseName, exerciseId, minutes, seconds);
+}
+
+function addExercise(exerciseName, exerciseId, minutes, seconds) {
+  const template = document.querySelector('#exercise-item-template');
   const cloned = template.content.cloneNode(true);
   const span = cloned.querySelector('span');
-  span.innerText = `${selectedOption.textContent} (${minutes} min, ${seconds} sec)`;
+  span.innerText = `${exerciseName} (${minutes} min, ${seconds} sec)`;
 
-  span.dataset.id = exerciseDropdown.value;
-  const exerciseTime = minutes * 60 + seconds;
-  span.dataset.time = exerciseTime;
+  span.dataset.id = exerciseId;
+  span.dataset.time = convertToSeconds(minutes, seconds);
 
   const removeBtn = cloned.querySelector('#exercise-remove');
   removeBtn.addEventListener('click', removeExercise);
 
   const sortableList = document.querySelector('.sortable-list');
+  if (sortableList.style.display === 'none') sortableList.style.display = 'block';
   sortableList.append(cloned);
 
-  const items = sortableList.querySelectorAll('.item');
-  items.forEach(item => {
-    item.addEventListener('dragstart', () => {
-      setTimeout(() => item.classList.add('dragging'), 0);
-    });
-    item.addEventListener('dragend', () => item.classList.remove('dragging'));
+  const obj = sortableList.lastElementChild;
+  obj.addEventListener('dragstart', () => {
+    setTimeout(() => obj.classList.add('dragging'), 0);
   });
+  obj.addEventListener('dragend', () => obj.classList.remove('dragging'));
 }
 
 function removeExercise(e) {
   e.currentTarget.parentElement.remove();
+  const sortableList = document.querySelector('.sortable-list');
+  if (sortableList.childElementCount === 0) sortableList.style.display = 'none';
 }
 
 async function saveWorkout() {
-  const workoutName = document.querySelector('#workout-name-input');
+  const workoutName = document.querySelector('#editor-workout-name-input');
   if (!workoutName.value) {
     console.log('Empty values');
     return;
@@ -97,12 +150,21 @@ async function saveWorkout() {
 
   const name = workoutName.value;
   const data = JSON.stringify(exercises);
-  await postWorkouts(name, data);
 
-  await exitWorkout();
+  const activeWorkout = JSON.parse(localStorage.getItem('workoutEdit'));
+  if (activeWorkout) {
+    await editWorkout(activeWorkout.workoutUUID, name, data);
+    exitWorkout();
+    return;
+  }
+
+  await postWorkout(getUserUUID(), name, data);
+  exitWorkout();
 }
 
 function exitWorkout() {
+  localStorage.removeItem('workoutEdit');
+  localStorage.removeItem('workoutExport');
   resetMenu();
   routeTo('workouts');
 }
@@ -110,17 +172,13 @@ function exitWorkout() {
 function resetMenu() {
   const sortableList = document.querySelector('.sortable-list');
   sortableList.innerHTML = '';
+  sortableList.style.display = 'none';
   document.querySelector('#exercise-dropdown').selectedIndex = 0;
-  document.querySelector('#workout-name-input').value = '';
+  document.querySelector('#editor-workout-name-input').value = '';
   document.querySelector('#exercise-minutes').value = '';
   document.querySelector('#exercise-seconds').value = '';
-  document.querySelector('#exercise-description').textContent = '';
+  document.querySelector('#editor-exercise-description').textContent = '';
   updateExerciseDescription();
-}
-
-async function fetchExercises() {
-  const response = await fetch('/api/exercises');
-  return await response.json();
 }
 
 const initSortableList = (e) => {
@@ -128,8 +186,9 @@ const initSortableList = (e) => {
   const sortableList = document.querySelector('.sortable-list');
   const draggingItem = document.querySelector('.dragging');
   const siblings = [...sortableList.querySelectorAll('.item:not(.dragging)')];
+  const mouseYWithScroll = e.clientY + window.scrollY;
   const nextSibling = siblings.find(sibling => {
-    return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+    return mouseYWithScroll <= sibling.offsetTop + sibling.offsetHeight / 2;
   });
   sortableList.insertBefore(draggingItem, nextSibling);
 };

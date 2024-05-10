@@ -1,4 +1,4 @@
-import { fetchWorkout, fetchExercise } from './common.js';
+import { fetchWorkout, fetchExercise, convertToTimeComponents } from './common.js';
 import { routeTo } from './router.js';
 
 const ui = {};
@@ -11,10 +11,11 @@ let workout = null;
 let activeExerciseIndex = null;
 
 export async function loadWorkoutPage() {
-  ui.exerciseLabel = document.querySelector('#exerciseLabel');
-  ui.startBtn = document.querySelector('#startBtn');
-  ui.stopBtn = document.querySelector('#stopBtn');
-  ui.nextBtn = document.querySelector('#nextBtn');
+  ui.exerciseNameLabel = document.querySelector('#exercise-label');
+  ui.exerciseDescriptionLabel = document.querySelector('#exercise-description-label');
+  ui.startBtn = document.querySelector('#start-button');
+  ui.stopBtn = document.querySelector('#stop-button');
+  ui.nextBtn = document.querySelector('#next-button');
 
   ui.startBtn.addEventListener('click', async () => {
     if (!startTime) {
@@ -57,7 +58,8 @@ async function loadWorkout() {
     const activeExercise = workoutData[activeExerciseIndex];
     const activeExerciseData = await fetchExercise(activeExercise.id);
     timerDuration = parseInt(activeExercise.time);
-    ui.exerciseLabel.innerText = activeExerciseData.name;
+    ui.exerciseNameLabel.innerText = activeExerciseData.name;
+    ui.exerciseDescriptionLabel.innerText = activeExerciseData.description;
   }
 }
 
@@ -109,7 +111,8 @@ async function nextExercise() {
   const activeExercise = workoutData[activeExerciseIndex];
   const activeExerciseData = await fetchExercise(activeExercise.id);
   timerDuration = parseInt(activeExercise.time);
-  ui.exerciseLabel.innerText = activeExerciseData.name;
+  ui.exerciseNameLabel.innerText = activeExerciseData.name;
+  ui.exerciseDescriptionLabel.innerText = activeExerciseData.description;
   updateDisplay(0);
   ui.startBtn.textContent = 'Start';
 }
@@ -126,9 +129,8 @@ function stop() {
 }
 
 function updateDisplay(time) {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  const timerDisplay = document.querySelector('#timerDisplay');
+  const { minutes, seconds } = convertToTimeComponents(time);
+  const timerDisplay = document.querySelector('#timer-display');
   timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 

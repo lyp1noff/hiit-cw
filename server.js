@@ -1,6 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 import * as db from './database.js';
 import config from './config.js';
@@ -11,7 +12,7 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(express.json());
 
-const serverIP = '0.0.0.0';
+const serverIP = '0.0.0.0'; // firefox doesn't like localhost
 const serverPort = 8080;
 const googleRedirectUrl = `http://${serverIP}:${serverPort}/auth/google/callback`;
 const googleClientId = config.googleClientId;
@@ -105,34 +106,39 @@ app.get('/api/workout/:uuid', async (req, res) => {
   }
 });
 
+// USER RELATED
+app.post('/api/workout', async (req, res) => {
+  const { userUUID, name, data } = req.body;
+  await db.addUserWorkout(userUUID, name, data);
+  if (data) {
+    res.json(data);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
+  }
+});
+
+// USER RELATED
 app.delete('/api/workout/:uuid', async (req, res) => {
   const uuid = req.params.uuid;
-  const data = await db.deleteWorkout(uuid);
-  if (data) {
-    res.json(data);
-  } else {
-    res.status(404).json({ error: 'SQL error' });
-  }
+  await db.deleteUserWorkout(uuid);
+  res.status(200).json({ status: 200 });
 });
 
-
-app.get('/api/workouts', async (req, res) => {
-  const data = await db.getWorkouts();
-  if (data) {
-    res.json(data);
-  } else {
-    res.status(404).json({ error: 'SQL error' });
-  }
-});
-
-app.post('/api/workouts', async (req, res) => {
+app.put('/api/workout/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
   const { name, data } = req.body;
-  await db.addWorkout(name, data);
-  res.status(200).json({ status: 200 });
+  const dbData = await db.editWorkout(uuid, name, data);
+  if (dbData) {
+    res.json(dbData);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
+  }
 });
 
-app.get('/api/users', async (req, res) => {
-  const data = await db.getUsers();
+// USER RELATED
+app.get('/api/workouts/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  const data = await db.getUserWorkouts(uuid);
   if (data) {
     res.json(data);
   } else {
@@ -140,14 +146,33 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-app.post('/api/users', async (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
-    res.status(400).json({ error: 'Name and email are required' });
-    return;
+app.get('/api/globalWorkouts/', async (req, res) => {
+  const data = await db.getGlobalWorkouts();
+  if (data) {
+    res.json(data);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
   }
-  await db.addUser(name, email);
+});
+
+app.get('/api/user/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  const data = await db.getUser(uuid);
+  if (data) {
+    res.json(data);
+  } else {
+    res.status(404).json({ error: 'SQL error' });
+  }
+});
+
+app.post('/api/user', async (req, res) => {
+  const { uuid } = req.body;
+  await db.addUser(uuid);
   res.status(200).json({ status: 200 });
+});
+
+app.get('/api/uuid', (req, res) => {
+  res.json({ uuid: uuidv4() });
 });
 
 app.use(express.static(join(__dirname, 'public')));

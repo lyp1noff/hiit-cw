@@ -1,9 +1,9 @@
 import { routeTo, showContent } from './router.js';
-import { deleteWorkout, fetchWorkouts } from './common.js';
+import { deleteWorkout, fetchWorkouts, getUserUUID } from './common.js';
 
 export async function loadWorkoutsPage() {
-  const addWorkoutBtn = document.querySelector('#addWorkout');
-  addWorkoutBtn.addEventListener('click', () => showContent('workout-edit'));
+  const addWorkoutBtn = document.querySelector('#add-workout');
+  addWorkoutBtn.addEventListener('click', addWorkout);
   await refreshUI();
 }
 
@@ -13,6 +13,11 @@ document.addEventListener('contentChanged', async (e) => {
     await refreshUI();
   }
 });
+
+function addWorkout() {
+  localStorage.removeItem('workoutEdit');
+  showContent('workout-edit');
+}
 
 function openWorkout(e) {
   const elem = e.target;
@@ -49,11 +54,19 @@ function openWorkout(e) {
   deleteButton.textContent = 'Delete';
   deleteButton.addEventListener('click', () => deleteWorkoutButtonClick(targetWorkoutUUID));
 
+  const shareButton = document.createElement('button');
+  shareButton.id = 'delete-workout';
+  shareButton.textContent = 'Share';
+  shareButton.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.origin + '/app/export/' + targetWorkoutUUID);
+  });
+
   const containerDiv = document.createElement('div');
   containerDiv.className = 'dropdown';
   containerDiv.appendChild(startButton);
   containerDiv.appendChild(editButton);
   containerDiv.appendChild(deleteButton);
+  containerDiv.appendChild(shareButton);
 
   elem.appendChild(containerDiv);
 }
@@ -76,7 +89,8 @@ function startWorkout(targetWorkoutUUID) {
 }
 
 function editWorkoutButtonClick(targetWorkoutUUID) {
-  console.log(targetWorkoutUUID);
+  localStorage.setItem('workoutEdit', JSON.stringify({ workoutUUID: targetWorkoutUUID }));
+  showContent('workout-edit');
 }
 
 async function deleteWorkoutButtonClick(targetWorkoutUUID) {
@@ -85,7 +99,7 @@ async function deleteWorkoutButtonClick(targetWorkoutUUID) {
 }
 
 async function refreshUI() {
-  const workouts = await fetchWorkouts();
+  const workouts = await fetchWorkouts(getUserUUID());
   const workoutsContainer = document.querySelector('.workouts-container');
   workoutsContainer.innerHTML = '';
   if (workouts.length < 1) {
