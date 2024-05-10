@@ -4,7 +4,7 @@ import { dirname, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 import * as db from './database.js';
-import config from './config.js';
+// import config from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,68 +14,71 @@ app.use(express.json());
 
 const serverIP = '0.0.0.0'; // firefox doesn't like localhost
 const serverPort = 8080;
-const googleRedirectUrl = `http://${serverIP}:${serverPort}/auth/google/callback`;
-const googleClientId = config.googleClientId;
-const googleClientSecret = config.googleClientSecret;
 
-app.get('/auth/google', (req, res) => {
-  const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=email profile&response_type=code`;
-  res.redirect(redirectUrl);
-});
-
-app.get('/auth/google/callback', async (req, res) => {
-  try {
-    const { code } = req.query;
-
-    const tokenUrl = 'https://oauth2.googleapis.com/token';
-    const tokenParams = new URLSearchParams({
-      code,
-      client_id: googleClientId,
-      client_secret: googleClientSecret,
-      redirect_uri: googleRedirectUrl,
-      grant_type: 'authorization_code',
-    });
-
-    const tokenResponse = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: tokenParams,
-    });
-
-    if (!tokenResponse.ok) {
-      throw new Error('Failed to exchange authorization code for access token');
-    }
-
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData.access_token;
-
-    const userInfoUrl = 'https://www.googleapis.com/oauth2/v3/userinfo';
-    const userInfoResponse = await fetch(userInfoUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!userInfoResponse.ok) {
-      throw new Error('Failed to fetch user information from Google');
-    }
-
-    const userData = await userInfoResponse.json();
-
-    // Handle user data
-    console.log(userData);
-    // const userID = userData.sub;
-
-    res.send(`Authentication successful. You will be redirected shortly.
-            <script>setTimeout(function() { window.location.href = "/app/settings"; }, 2000);</script>`,
-    );
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('An error occurred during authentication');
-  }
-});
+// I mean it works, but it's not the best way to do it
+//
+// const googleRedirectUrl = `http://${serverIP}:${serverPort}/auth/google/callback`;
+// const googleClientId = config.googleClientId;
+// const googleClientSecret = config.googleClientSecret;
+//
+// app.get('/auth/google', (req, res) => {
+//   const redirectUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&scope=email profile&response_type=code`;
+//   res.redirect(redirectUrl);
+// });
+//
+// app.get('/auth/google/callback', async (req, res) => {
+//   try {
+//     const { code } = req.query;
+//
+//     const tokenUrl = 'https://oauth2.googleapis.com/token';
+//     const tokenParams = new URLSearchParams({
+//       code,
+//       client_id: googleClientId,
+//       client_secret: googleClientSecret,
+//       redirect_uri: googleRedirectUrl,
+//       grant_type: 'authorization_code',
+//     });
+//
+//     const tokenResponse = await fetch(tokenUrl, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded',
+//       },
+//       body: tokenParams,
+//     });
+//
+//     if (!tokenResponse.ok) {
+//       throw new Error('Failed to exchange authorization code for access token');
+//     }
+//
+//     const tokenData = await tokenResponse.json();
+//     const accessToken = tokenData.access_token;
+//
+//     const userInfoUrl = 'https://www.googleapis.com/oauth2/v3/userinfo';
+//     const userInfoResponse = await fetch(userInfoUrl, {
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+//
+//     if (!userInfoResponse.ok) {
+//       throw new Error('Failed to fetch user information from Google');
+//     }
+//
+//     const userData = await userInfoResponse.json();
+//
+//     // Handle user data
+//     console.log(userData);
+//     // const userID = userData.sub;
+//
+//     res.send(`Authentication successful. You will be redirected shortly.
+//             <script>setTimeout(function() { window.location.href = "/app/settings"; }, 2000);</script>`,
+//     );
+//   } catch (error) {
+//     console.error('Error:', error);
+//     res.status(500).send('An error occurred during authentication');
+//   }
+// });
 
 app.get('/api/exercise/:id', async (req, res) => {
   const id = req.params.id;

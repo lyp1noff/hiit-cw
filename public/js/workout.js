@@ -1,4 +1,4 @@
-import { fetchWorkout, fetchExercise, convertToTimeComponents } from './common.js';
+import { fetchWorkout, fetchExercise, convertToTimeComponents, showAlert } from './common.js';
 import { routeTo } from './router.js';
 
 const ui = {};
@@ -102,6 +102,7 @@ async function nextExercise() {
   localStorage.removeItem('timerState');
   const workoutData = JSON.parse(workout.data);
   if (workoutData.length <= activeExerciseIndex + 1) {
+    showAlert('Workout Complete', 'You have completed the workout!');
     stop();
     return;
   }

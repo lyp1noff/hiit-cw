@@ -145,21 +145,22 @@ nav ul li a {
 }
 
 .alertbox {
+    display: none;
     left: 50%;
     transform: translate(-50%, 0);
     position: absolute;
     top: 0;
-    width: 90%;
+    max-width: 90%;
     background-color: #00442b;
     opacity: 96%;
     color: white;
     text-align: center;
-    padding: 10px;
+    padding: 14px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
 .alertbox .alertbox-header{
     font-size: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }

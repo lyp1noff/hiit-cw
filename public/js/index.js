@@ -36,23 +36,5 @@ async function loadPages() {
   await handleUrlChange();
 }
 
-function showAlert(message) {
-  const alertBox = document.querySelector('.alertBox');
-  const alertBoxHeader = document.querySelector('.alertbox-header');
-  const alertBoxMessage = document.querySelector('.alertbox-message');
-  alertBoxHeader.textContent = message;
-  alertBoxMessage.textContent = message;
-  alertBox.style.display = 'block';
-
-  // Auto-hide after 5 seconds
-  setTimeout(function () {
-    alertBox.style.display = 'none';
-  }, 5000);
-}
-
-// Example usage:
-showAlert('This is your alert message.');
-
-
 document.addEventListener('DOMContentLoaded', init);
 window.addEventListener('popstate', handleUrlChange);

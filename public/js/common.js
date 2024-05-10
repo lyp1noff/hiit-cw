@@ -12,6 +12,19 @@ export function convertToSeconds(minutes, seconds) {
   return minutes * 60 + seconds;
 }
 
+export function showAlert(header, message) {
+  const alertBox = document.querySelector('.alertbox');
+  const alertBoxHeader = document.querySelector('.alertbox-header');
+  const alertBoxMessage = document.querySelector('.alertbox-message');
+  alertBoxHeader.textContent = header;
+  alertBoxMessage.textContent = message;
+  alertBox.style.display = 'block';
+
+  setTimeout(function () {
+    alertBox.style.display = 'none';
+  }, 3000);
+}
+
 export async function generateUUID() {
   const response = await fetch('/api/uuid');
   const data = await response.json();

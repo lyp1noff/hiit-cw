@@ -6,7 +6,7 @@ import {
   fetchExercise,
   fetchExercises,
   fetchWorkout, getUserUUID,
-  postWorkout,
+  postWorkout, showAlert,
 } from './common.js';
 
 let exercises = {};
@@ -95,7 +95,7 @@ function addExerciseClick() {
   const seconds = exerciseSeconds.value.trim() === '' ? 0 : parseInt(exerciseSeconds.value);
 
   if (!(minutes || seconds) || !exerciseDropdown.value) {
-    console.log('Empty values');
+    showAlert('Error', 'Enter time for exercise');
     return;
   }
 
@@ -134,7 +134,7 @@ function removeExercise(e) {
 async function saveWorkout() {
   const workoutName = document.querySelector('#editor-workout-name-input');
   if (!workoutName.value) {
-    console.log('Empty values');
+    showAlert('Error', 'Workout name is required');
     return;
   }
 

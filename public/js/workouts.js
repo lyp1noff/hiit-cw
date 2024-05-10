@@ -1,5 +1,5 @@
 import { routeTo, showContent } from './router.js';
-import { deleteWorkout, fetchWorkouts, getUserUUID } from './common.js';
+import { deleteWorkout, fetchWorkouts, getUserUUID, showAlert } from './common.js';
 
 export async function loadWorkoutsPage() {
   const addWorkoutBtn = document.querySelector('#add-workout');
@@ -57,9 +57,7 @@ function openWorkout(e) {
   const shareButton = document.createElement('button');
   shareButton.id = 'delete-workout';
   shareButton.textContent = 'Share';
-  shareButton.addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.origin + '/app/export/' + targetWorkoutUUID);
-  });
+  shareButton.addEventListener('click', () => shareWorkoutButtonClick(targetWorkoutUUID));
 
   const containerDiv = document.createElement('div');
   containerDiv.className = 'dropdown';
@@ -81,7 +79,7 @@ function startWorkout(targetWorkoutUUID) {
       routeTo('workout');
       return;
     } else {
-      console.log('There is another already active workout.');
+      showAlert('Warning', 'There is another already active workout.');
       return;
     }
   }
@@ -96,6 +94,11 @@ function editWorkoutButtonClick(targetWorkoutUUID) {
 async function deleteWorkoutButtonClick(targetWorkoutUUID) {
   await deleteWorkout(targetWorkoutUUID);
   await refreshUI();
+}
+
+function shareWorkoutButtonClick(targetWorkoutUUID) {
+  navigator.clipboard.writeText(window.location.origin + '/app/export/' + targetWorkoutUUID);
+  showAlert('Success', 'Workout link copied to clipboard.');
 }
 
 async function refreshUI() {

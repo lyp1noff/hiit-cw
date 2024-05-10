@@ -1,4 +1,4 @@
-import { fetchUser, getUserUUID } from './common.js';
+import { fetchUser, getUserUUID, showAlert } from './common.js';
 
 export function loadSettingsPage() {
   const getBtn = document.querySelector('#restore-session');
@@ -12,17 +12,19 @@ async function restoreSession() {
   const inputField = document.querySelector('#uuid-input');
   const inputValue = inputField.value.trim();
   if (inputValue.length !== 36) {
-    console.log('Length is not 36');
+    showAlert('Error', 'Invalid UUID');
     return;
   }
 
   const res = await fetchUser(inputValue);
   if (res.error || !res.uuid) {
-    console.log('Wrong UUID');
+    showAlert('Error', 'Invalid UUID');
     return;
   }
 
   localStorage.setItem('user', res.uuid);
+  showAlert('Success', 'Session restored!');
+  inputField.value = '';
   updateLabel();
 }
 
