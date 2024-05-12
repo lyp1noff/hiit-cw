@@ -2,85 +2,131 @@
 <html lang="en">
 
 <title>HIIT</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script type="module" src="/js/index.js"></script>
-<link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="shortcut icon" type="image/png" href="img/192.png">
+<link rel="apple-touch-icon" href="img/192.png">
+<link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/css/home.css">
 <link rel="stylesheet" href="/css/workout.css">
 <link rel="stylesheet" href="/css/workouts.css">
 <link rel="stylesheet" href="/css/workoutEdit.css">
+<link rel="stylesheet" href="/css/settings.css">
 
 <nav>
-    <a href="/"><h1>HIIT App</h1></a>
-    <ul>
-        <li><a data-route="home" class="nav__link">Home</a></li>
-        <li><a data-route="workouts" class="nav__link">Workouts</a></li>
-        <li><a data-route="settings" class="nav__link">Settings</a></li>
-    </ul>
+  <a href="/">
+    <h1>HIIT App</h1>
+  </a>
+  <ul>
+    <li><a data-route="home" class="nav-link">Home</a></li>
+    <li><a data-route="workouts" class="nav-link">Workouts</a></li>
+    <li><a data-route="settings" class="nav-link">Settings</a></li>
+  </ul>
 </nav>
 
 <main>
-    <section class="screen fade-in" data-route="home">
-        <h1>Home</h1>
-    </section>
+  <section class="screen page" data-route="home">
+    <h1>Popular Workouts</h1>
+    <div class="home-workouts-container"></div>
+  </section>
 
-    <section class="screen fade-in" data-route="workouts">
-        <div class="workouts">
-            <h1>Workouts</h1>
-            <div class="workouts-container"></div>
-            <button id="addWorkout">Add Workout</button>
-        </div>
-    </section>
+  <section class="screen page" data-route="workouts">
+    <div class="workouts">
+      <h1>Workouts</h1>
+      <div class="workouts-container"></div>
+      <button id="add-workout">Add Workout</button>
+    </div>
+  </section>
 
-    <section class="screen fade-in" data-route="workout-edit">
-        <h1>Workout Menu</h1>
-        <div class="workout-input">
-            <input id="workout-name" placeholder="Name your Workout">
-            <div class="exercise-input-wrapper">
-                <select id="exercise-dropdown"></select>
-                <input type="number" id="exercise-time" placeholder="Minutes">
-                <button id="exerciseAddBtn">Add Exercise</button>
-            </div>
-            <p id="exercise-description"></p>
-        </div>
-        <ul class="sortable-list"></ul>
-        <button id="exerciseSave">Save</button>
-        <button id="exerciseExit">Exit</button>
-    </section>
+  <section class="screen page" data-route="workout-edit">
+    <h1>Workout Edit</h1>
+    <div class="editor-workout-input-wrapper">
+      <input class="editor-workout-input" id="editor-workout-name-input" placeholder="Name your Workout">
+      <div class="editor-exercise-input-wrapper">
+        <select id="exercise-dropdown"></select>
+        <input type="number" id="exercise-minutes" class="exercise-input" placeholder="Minutes">
+        <input type="number" id="exercise-seconds" class="exercise-input" placeholder="Seconds">
+        <button id="add-exercise">Add Exercise</button>
+      </div>
+      <div class="editor-workout-custom">
+        <input class="editor-workout-input" id="editor-workout-custom-name-input" placeholder="Name your exercise">
+        <input class="editor-workout-input" id="editor-workout-custom-desc-input" placeholder="Describe your exercise">
+      </div>
+      <p id="editor-exercise-description"></p>
+    </div>
+    <ul class="sortable-list"></ul>
+    <button id="save-exercise">Save</button>
+    <button id="exit-exercise">Exit</button>
+  </section>
 
-    <section class="screen fade-in" data-route="workout">
-        <div class="workout-container">
-            <h1 id="exerciseLabel"></h1>
-            <div id="timerDisplay">00:00</div>
-            <button id="startBtn">Start Workout</button>
-            <button id="stopBtn">Stop Workout</button>
-        </div>
-    </section>
+  <section class="screen page" data-route="workoutMenu">
+    <div class="workout-container">
+      <h1 id="workout-name"></h1>
+      <button id="launch-workout">Start</button>
+      <button id="edit-workout">Edit</button>
+      <button id="delete-workout">Delete</button>
+    </div>
+  </section>
 
-    <section class="screen fade-in" data-route="settings">
-        <h1>Settings</h1>
-        <button id="getBtn">GET_USERS</button>
-        <button id="addBtn">ADD_USER</button>
-        <a href="/auth/google">Google Login</a>
-    </section>
+  <section class="screen page" data-route="workout">
+    <div class="workout-container">
+      <h1 id="exercise-label"></h1>
+      <p id="exercise-description-label"></p>
+      <div id="timer-display">00:00</div>
+      <div class="workout-button-container">
+        <button id="stop-button">Stop Workout</button>
+        <button id="start-button">Start Workout</button>
+        <button id="next-button">Next Exercise</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen page" data-route="settings">
+    <div class="settings-container">
+      <h1>Settings</h1>
+      <p>Your current unique number (Click to Copy)</p>
+      <b id="uuid-label"></b>
+      <label for="uuid-input">Input your unique number to restore your session</label><input id="uuid-input">
+      <button id="restore-session">Restore Session</button>
+      <!--<a href="/auth/google">Google Login</a>-->
+    </div>
+  </section>
 </main>
 
 <footer>
-    <div class="mobile">
-        <a data-route="home" class="nav__link">Home</a>
-        <a data-route="workouts" class="nav__link">Workouts</a>
-        <a data-route="settings" class="nav__link">Settings</a>
-    </div>
+  <div class="mobile">
+    <a data-route="home" class="nav-link">Home</a>
+    <a data-route="workouts" class="nav-link">Workouts</a>
+    <a data-route="settings" class="nav-link">Settings</a>
+  </div>
 </footer>
 
-<template id="exerciseItemTemplate">
-    <li class="item" draggable="true">
-        <div class="details">
-            <span>{text}</span>
-        </div>
-        <button id="exercise-edit">Edit</button>
-        <button id="exercise-remove">Remove</button>
-        <!--<i class="uil uil-draggabledots"></i>-->
-    </li>
+<div class="alertbox">
+    <div class="alertbox-header"></div>
+    <div class="alertbox-message"></div>
+</div>
+
+<template id="exercise-item-template">
+  <li class="item" draggable="true">
+    <div class="details">
+      <span>{text}</span>
+    </div>
+    <button id="exercise-remove">Remove</button>
+  </li>
 </template>
+
+<template id="workout-card-template">
+  <div class="home-workout-card">
+    <div class="home-workout-image-container">
+    </div>
+    <div class="home-workout-info">
+      <h2 class="home-workout-name"></h2>
+      <p class="home-workout-description"></p>
+      <button id="home-copy-workout-button">Copy Workout!</button>
+    </div>
+  </div>
+</template>
+
 </html>

@@ -1,0 +1,33 @@
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.settings-container p, b{
+    margin: 10px;
+    font-size: 18px;
+}
+
+.settings-container b{
+    cursor: pointer;
+}
+
+.settings-container label {
+    margin: 10px;
+    font-size: 18px;
+}
+
+.settings-container input {
+    border: 2px solid #218c5a;
+    border-radius: 5px;
+    margin: 10px;
+    font-size: 18px;
+    padding: 5px;
+    width: 100%;
+    max-width: 360px;
+}
+
+.settings-container button {
+    margin-top: 10px;
+}

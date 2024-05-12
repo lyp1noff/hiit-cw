@@ -1,27 +1,43 @@
+import { fetchUser, getUserUUID, showAlert } from './common.js';
+
 export function loadSettingsPage() {
-  const getBtn = document.querySelector('#getBtn');
-  getBtn.addEventListener('click', async () => {
-    const data = await fetchUsers();
-    console.log(data);
-  });
-
-  const addBtn = document.querySelector('#addBtn');
-  addBtn.addEventListener('click', async () => {
-    await addUser('Andrew', 'lyp1noff@gmail.com');
-  });
+  const getBtn = document.querySelector('#restore-session');
+  getBtn.addEventListener('click', restoreSession);
+  const uuidLabel = document.querySelector('#uuid-label');
+  uuidLabel.addEventListener('click', copyUUID);
+  uuidLabel.innerText = getUserUUID();
 }
 
-async function fetchUsers() {
-  const response = await fetch('/api/users');
-  return await response.json();
+async function restoreSession() {
+  const inputField = document.querySelector('#uuid-input');
+  const inputValue = inputField.value.trim();
+  if (inputValue.length !== 36) {
+    showAlert('Error', 'Invalid UUID');
+    return;
+  }
+
+  const res = await fetchUser(inputValue);
+  if (res.error || !res.uuid) {
+    showAlert('Error', 'Invalid UUID');
+    return;
+  }
+
+  localStorage.setItem('user', res.uuid);
+  localStorage.removeItem('timerState');
+  localStorage.removeItem('workout');
+  inputField.value = '';
+  updateLabel();
+  showAlert('Success', 'Session restored!');
 }
 
-async function addUser(name, email) {
-  await fetch('/api/users', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, email }),
-  });
+function updateLabel() {
+  const uuidLabel = document.querySelector('#uuid-label');
+  uuidLabel.innerText = getUserUUID();
+}
+
+function copyUUID() {
+  const uuidLabel = document.querySelector('#uuid-label');
+  const uuid = uuidLabel.innerText;
+  navigator.clipboard.writeText(uuid);
+  showAlert('Success', 'UUID copied to clipboard.');
 }

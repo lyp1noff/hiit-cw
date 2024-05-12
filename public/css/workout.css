@@ -1,8 +1,30 @@
-.workout-container button {
-    margin-top: 20px;
+.workout-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.workout-container #timerDisplay {
+.workout-container .workout-button-container{
+    display: flex;
+    position: absolute;
+    bottom: 10%;
+    justify-content: center;
+}
+
+.workout-container .workout-button-container button {
+    margin: 5px;
+}
+
+.workout-container #timer-display {
+    position: absolute;
+    top: 46%;
+    justify-content: center;
     font-size: 48px;
-    margin-top: 20px;
+}
+
+#exercise-description-label {
+    font-size: 20px;
+    max-width: 600px;
+    margin: 0 auto;
 }

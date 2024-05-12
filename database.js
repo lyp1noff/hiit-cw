@@ -14,38 +14,79 @@ async function init() {
 
 const dbConn = init();
 
+// USER RELATED
+export async function addUserWorkout(userUUID, name, data) {
+  const workoutUUID = uuidv4();
+  await addWorkout(workoutUUID, name, data);
+  await addUserToWorkout(userUUID, workoutUUID);
+}
+
+export async function deleteUserWorkout(workoutUUID) {
+  await deleteWorkout(workoutUUID);
+  await deleteUserToWorkout(workoutUUID);
+}
+
+
+async function addUserToWorkout(userUUID, workoutUUID) {
+  const db = await dbConn;
+  return await db.run('INSERT INTO user_to_workout (user_uuid, workout_uuid) VALUES (?, ?)', [userUUID, workoutUUID]);
+}
+async function deleteUserToWorkout(workoutUUID) {
+  const db = await dbConn;
+  return await db.run('DELETE FROM user_to_workout WHERE workout_uuid = ?', [workoutUUID]);
+}
+
+export async function addExercise(uuid, name, description) {
+  const db = await dbConn;
+  return await db.run('INSERT INTO exercise (uuid, name, description) VALUES (?, ?, ?)', [uuid, name, description]);
+}
+
 export async function getExercise(id) {
   const db = await dbConn;
-  return await db.get('SELECT * FROM exercises WHERE id = ?', [id]);
+  return await db.get('SELECT * FROM exercise WHERE id = ?', [id]);
 }
 
-export async function getExercises() {
+export async function getExercises(uuid) {
   const db = await dbConn;
-  return await db.all('SELECT * FROM exercises');
+  return await db.all('SELECT * FROM exercise WHERE uuid IS NULL OR uuid = ?', [uuid]);
 }
 
-export async function addWorkout(name, data) {
-  const uuid = uuidv4();
+export async function addWorkout(uuid, name, data) {
   const db = await dbConn;
-  await db.run('INSERT INTO workouts (uuid, name, data) VALUES (?, ?, ?)', [uuid, name, data]);
+  return await db.run('INSERT INTO workout (uuid, name, data) VALUES (?, ?, ?)', [uuid, name, data]);
+}
+
+export async function editWorkout(uuid, name, data) {
+  const db = await dbConn;
+  return await db.run('UPDATE workout SET name = ?, data = ? WHERE uuid = ?', [name, data, uuid]);
+}
+
+export async function deleteWorkout(uuid) {
+  const db = await dbConn;
+  return await db.run('DELETE FROM workout WHERE uuid = ?', [uuid]);
 }
 
 export async function getWorkout(uuid) {
   const db = await dbConn;
-  return await db.get('SELECT * FROM workouts WHERE uuid = ?', [uuid]);
+  return await db.get('SELECT * FROM workout WHERE uuid = ?', [uuid]);
 }
 
-export async function getWorkouts() {
+export async function getGlobalWorkouts() {
   const db = await dbConn;
-  return await db.all('SELECT * FROM workouts');
+  return await db.all('SELECT * FROM workout WHERE description IS NOT NULL AND image_url IS NOT NULL');
 }
 
-export async function getUsers() {
+export async function getUserWorkouts(uuid) {
   const db = await dbConn;
-  return await db.all('SELECT * FROM users');
+  return await db.all('SELECT w.* FROM workout w JOIN user_to_workout uw ON w.uuid = uw.workout_uuid WHERE uw.user_uuid = ?', [uuid]);
 }
 
-export async function addUser(name, email) {
+export async function getUser(uuid) {
   const db = await dbConn;
-  await db.run('INSERT INTO users (name, email) VALUES (?, ?)', [name, email]);
+  return await db.get('SELECT * FROM user WHERE uuid = ?', [uuid]);
+}
+
+export async function addUser(uuid) {
+  const db = await dbConn;
+  return await db.run('INSERT INTO user (uuid) VALUES (?)', [uuid]);
 }

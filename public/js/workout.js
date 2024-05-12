@@ -1,3 +1,4 @@
+import { fetchWorkout, fetchExercise, convertToTimeComponents, showAlert } from './common.js';
 import { routeTo } from './router.js';
 
 const ui = {};
@@ -10,9 +11,11 @@ let workout = null;
 let activeExerciseIndex = null;
 
 export async function loadWorkoutPage() {
-  ui.exerciseLabel = document.querySelector('#exerciseLabel');
-  ui.startBtn = document.querySelector('#startBtn');
-  ui.stopBtn = document.querySelector('#stopBtn');
+  ui.exerciseNameLabel = document.querySelector('#exercise-label');
+  ui.exerciseDescriptionLabel = document.querySelector('#exercise-description-label');
+  ui.startBtn = document.querySelector('#start-button');
+  ui.stopBtn = document.querySelector('#stop-button');
+  ui.nextBtn = document.querySelector('#next-button');
 
   ui.startBtn.addEventListener('click', async () => {
     if (!startTime) {
@@ -21,8 +24,13 @@ export async function loadWorkoutPage() {
       pause();
     }
   });
+
   ui.stopBtn.addEventListener('click', () => {
     stop();
+  });
+
+  ui.nextBtn.addEventListener('click', () => {
+    nextExercise();
   });
 
   await loadWorkout();
@@ -49,8 +57,9 @@ async function loadWorkout() {
     const workoutData = JSON.parse(workout.data);
     const activeExercise = workoutData[activeExerciseIndex];
     const activeExerciseData = await fetchExercise(activeExercise.id);
-    timerDuration = parseInt(activeExercise.time) * 5;
-    ui.exerciseLabel.innerText = activeExerciseData.name;
+    timerDuration = parseInt(activeExercise.time);
+    ui.exerciseNameLabel.innerText = activeExerciseData.name;
+    ui.exerciseDescriptionLabel.innerText = activeExerciseData.description;
   }
 }
 
@@ -71,7 +80,8 @@ async function tick() {
   const remainingSeconds = timerDuration - elapsedTime;
   if (remainingSeconds <= 0) {
     updateDisplay(0);
-    await timerExpired();
+    await nextExercise();
+    await start();
   }
   updateDisplay(remainingSeconds);
 }
@@ -84,7 +94,7 @@ function pause() {
   saveState();
 }
 
-async function timerExpired() {
+async function nextExercise() {
   clearInterval(timerInterval);
   pausedTime = 0;
   startTime = 0;
@@ -92,6 +102,7 @@ async function timerExpired() {
   localStorage.removeItem('timerState');
   const workoutData = JSON.parse(workout.data);
   if (workoutData.length <= activeExerciseIndex + 1) {
+    showAlert('Workout Complete', 'You have completed the workout!');
     stop();
     return;
   }
@@ -100,10 +111,11 @@ async function timerExpired() {
 
   const activeExercise = workoutData[activeExerciseIndex];
   const activeExerciseData = await fetchExercise(activeExercise.id);
-  timerDuration = parseInt(activeExercise.time) * 5;
-  ui.exerciseLabel.innerText = activeExerciseData.name;
-
-  await start();
+  timerDuration = parseInt(activeExercise.time);
+  ui.exerciseNameLabel.innerText = activeExerciseData.name;
+  ui.exerciseDescriptionLabel.innerText = activeExerciseData.description;
+  updateDisplay(0);
+  ui.startBtn.textContent = 'Start';
 }
 
 function stop() {
@@ -118,9 +130,8 @@ function stop() {
 }
 
 function updateDisplay(time) {
-  const minutes = Math.floor(time / 60);
-  const seconds = time % 60;
-  const timerDisplay = document.querySelector('#timerDisplay');
+  const { minutes, seconds } = convertToTimeComponents(time);
+  const timerDisplay = document.querySelector('#timer-display');
   timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
@@ -140,14 +151,4 @@ function loadTimerState() {
       updateDisplay(timerDuration - Math.floor(pausedTime / 1000));
     }
   }
-}
-
-async function fetchWorkout(uuid) {
-  const response = await fetch(`/api/workout/${uuid}`);
-  return await response.json();
-}
-
-async function fetchExercise(id) {
-  const response = await fetch(`/api/exercise/${id}`);
-  return await response.json();
 }
